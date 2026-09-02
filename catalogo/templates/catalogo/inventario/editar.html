@@ -1,0 +1,51 @@
+{% extends 'catalogo/crud/formulario.html' %}
+
+{% block titulo_pagina %}Editar inventario{% endblock %}
+
+{% block titulo %}Editar registro de inventario{% endblock %}
+
+{% block url_lista %}
+    {% url 'catalogo:lista_inventarios' %}
+{% endblock %}
+
+{% block formulario %}
+
+<div class="mb-3">
+    <label class="form-label">Producto</label>
+    <select name="producto" class="form-select" required>
+        {% for producto in productos %}
+            <option
+                value="{{ producto.id }}"
+                {% if producto.id == inventario.producto_id %}selected{% endif %}
+            >
+                {{ producto.nombre }}
+            </option>
+        {% endfor %}
+    </select>
+</div>
+
+<div class="mb-3">
+    <label class="form-label">Cantidad</label>
+    <input
+        type="number"
+        name="cantidad"
+        class="form-control"
+        value="{{ inventario.cantidad }}"
+        min="0"
+        required
+    >
+</div>
+
+<div class="mb-3">
+    <label class="form-label">Stock mínimo</label>
+    <input
+        type="number"
+        name="stock_minimo"
+        class="form-control"
+        value="{{ inventario.stock_minimo }}"
+        min="0"
+        required
+    >
+</div>
+
+{% endblock %}

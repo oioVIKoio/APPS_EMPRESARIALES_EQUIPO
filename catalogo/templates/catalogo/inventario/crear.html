@@ -1,0 +1,48 @@
+{% extends 'catalogo/crud/formulario.html' %}
+
+{% block titulo_pagina %}Nuevo inventario{% endblock %}
+
+{% block titulo %}Nuevo registro de inventario{% endblock %}
+
+{% block url_lista %}
+    {% url 'catalogo:lista_inventarios' %}
+{% endblock %}
+
+{% block formulario %}
+
+<div class="mb-3">
+    <label class="form-label">Producto</label>
+    <select name="producto" class="form-select" required>
+        <option value="">Seleccionar producto</option>
+
+        {% for producto in productos %}
+            <option value="{{ producto.id }}">
+                {{ producto.nombre }}
+            </option>
+        {% endfor %}
+    </select>
+</div>
+
+<div class="mb-3">
+    <label class="form-label">Cantidad</label>
+    <input
+        type="number"
+        name="cantidad"
+        class="form-control"
+        min="0"
+        required
+    >
+</div>
+
+<div class="mb-3">
+    <label class="form-label">Stock mínimo</label>
+    <input
+        type="number"
+        name="stock_minimo"
+        class="form-control"
+        min="0"
+        required
+    >
+</div>
+
+{% endblock %}

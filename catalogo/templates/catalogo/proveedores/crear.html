@@ -1,0 +1,43 @@
+{% extends 'catalogo/crud/formulario.html' %}
+
+{% block titulo_pagina %}Nuevo proveedor{% endblock %}
+
+{% block titulo %}Nuevo proveedor{% endblock %}
+
+{% block url_lista %}
+    {% url 'catalogo:lista_proveedores' %}
+{% endblock %}
+
+{% block formulario %}
+
+<div class="mb-3">
+    <label class="form-label">Nombre</label>
+    <input
+        type="text"
+        name="nombre"
+        class="form-control"
+        required
+    >
+</div>
+
+<div class="mb-3">
+    <label class="form-label">Teléfono</label>
+    <input
+        type="text"
+        name="telefono"
+        class="form-control"
+        required
+    >
+</div>
+
+<div class="mb-3">
+    <label class="form-label">Correo electrónico</label>
+    <input
+        type="email"
+        name="email"
+        class="form-control"
+        required
+    >
+</div>
+
+{% endblock %}

@@ -1,0 +1,33 @@
+{% extends 'catalogo/crud/formulario.html' %}
+
+{% block titulo_pagina %}Editar categoría{% endblock %}
+
+{% block titulo %}Editar categoría{% endblock %}
+
+{% block url_lista %}
+    {% url 'catalogo:lista_categorias' %}
+{% endblock %}
+
+{% block formulario %}
+
+<div class="mb-3">
+    <label class="form-label">Nombre</label>
+    <input
+        type="text"
+        name="nombre"
+        class="form-control"
+        value="{{ categoria.nombre }}"
+        required
+    >
+</div>
+
+<div class="mb-3">
+    <label class="form-label">Descripción</label>
+    <textarea
+        name="descripcion"
+        class="form-control"
+        rows="4"
+    >{{ categoria.descripcion }}</textarea>
+</div>
+
+{% endblock %}

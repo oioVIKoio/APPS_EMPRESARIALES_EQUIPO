@@ -1,0 +1,9 @@
+{% extends 'catalogo/crud/eliminar.html' %}
+
+{% block objeto %}
+    {{ categoria }}
+{% endblock %}
+
+{% block url_lista %}
+    {% url 'catalogo:lista_categorias' %}
+{% endblock %}

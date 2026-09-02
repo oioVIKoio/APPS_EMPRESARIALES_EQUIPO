@@ -1,0 +1,79 @@
+{% extends 'catalogo/crud/lista.html' %}
+
+{% block titulo_pagina %}Inventario{% endblock %}
+
+{% block titulo %}Inventario{% endblock %}
+
+{% block descripcion %}
+    Consulta y administra el stock de los productos.
+{% endblock %}
+
+{% block url_crear %}
+    {% url 'catalogo:crear_inventario' %}
+{% endblock %}
+
+{% block encabezado %}
+<tr>
+    <th>ID</th>
+    <th>Producto</th>
+    <th>Cantidad</th>
+    <th>Stock mínimo</th>
+    <th>Estado</th>
+    <th class="text-end">Acciones</th>
+</tr>
+{% endblock %}
+
+{% block filas %}
+
+{% for inventario in inventarios %}
+<tr>
+    <td>{{ inventario.id }}</td>
+
+    <td class="fw-semibold">
+        {{ inventario.producto.nombre }}
+    </td>
+
+    <td>{{ inventario.cantidad }}</td>
+
+    <td>{{ inventario.stock_minimo }}</td>
+
+    <td>
+        {% if inventario.cantidad <= inventario.stock_minimo %}
+            <span class="badge text-bg-warning">
+                Stock bajo
+            </span>
+        {% else %}
+            <span class="badge text-bg-success">
+                Disponible
+            </span>
+        {% endif %}
+    </td>
+
+    <td class="text-end">
+        <a
+            href="{% url 'catalogo:editar_inventario' inventario.id %}"
+            class="btn btn-sm btn-outline-primary"
+        >
+            Editar
+        </a>
+
+        <a
+            href="{% url 'catalogo:eliminar_inventario' inventario.id %}"
+            class="btn btn-sm btn-outline-danger"
+        >
+            Eliminar
+        </a>
+    </td>
+</tr>
+
+{% empty %}
+
+<tr>
+    <td colspan="6" class="text-center py-5 text-muted">
+        No hay registros de inventario.
+    </td>
+</tr>
+
+{% endfor %}
+
+{% endblock %}

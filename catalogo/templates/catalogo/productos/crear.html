@@ -1,0 +1,84 @@
+{% extends 'catalogo/crud/formulario.html' %}
+
+{% block titulo_pagina %}Nuevo producto{% endblock %}
+
+{% block titulo %}Nuevo producto{% endblock %}
+
+{% block url_lista %}
+    {% url 'catalogo:lista_productos' %}
+{% endblock %}
+
+{% block formulario %}
+
+<div class="mb-3">
+    <label class="form-label">Nombre</label>
+    <input
+        type="text"
+        name="nombre"
+        class="form-control"
+        required
+    >
+</div>
+
+<div class="mb-3">
+    <label class="form-label">Descripción</label>
+    <textarea
+        name="descripcion"
+        class="form-control"
+        rows="4"
+        required
+    ></textarea>
+</div>
+
+<div class="mb-3">
+    <label class="form-label">Precio</label>
+    <input
+        type="number"
+        name="precio"
+        class="form-control"
+        step="0.01"
+        min="0"
+        required
+    >
+</div>
+
+<div class="mb-3">
+    <label class="form-label">Categoría</label>
+    <select name="categoria" class="form-select" required>
+        <option value="">Seleccionar categoría</option>
+
+        {% for categoria in categorias %}
+            <option value="{{ categoria.id }}">
+                {{ categoria.nombre }}
+            </option>
+        {% endfor %}
+    </select>
+</div>
+
+<div class="mb-3">
+    <label class="form-label">Marca</label>
+    <select name="marca" class="form-select" required>
+        <option value="">Seleccionar marca</option>
+
+        {% for marca in marcas %}
+            <option value="{{ marca.id }}">
+                {{ marca.nombre }}
+            </option>
+        {% endfor %}
+    </select>
+</div>
+
+<div class="mb-3">
+    <label class="form-label">Proveedor</label>
+    <select name="proveedor" class="form-select" required>
+        <option value="">Seleccionar proveedor</option>
+
+        {% for proveedor in proveedores %}
+            <option value="{{ proveedor.id }}">
+                {{ proveedor.nombre }}
+            </option>
+        {% endfor %}
+    </select>
+</div>
+
+{% endblock %}

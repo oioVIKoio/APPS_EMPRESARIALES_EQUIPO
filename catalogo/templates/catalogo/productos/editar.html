@@ -1,0 +1,89 @@
+{% extends 'catalogo/crud/formulario.html' %}
+
+{% block titulo_pagina %}Editar producto{% endblock %}
+
+{% block titulo %}Editar producto{% endblock %}
+
+{% block url_lista %}
+    {% url 'catalogo:lista_productos' %}
+{% endblock %}
+
+{% block formulario %}
+
+<div class="mb-3">
+    <label class="form-label">Nombre</label>
+    <input
+        type="text"
+        name="nombre"
+        class="form-control"
+        value="{{ producto.nombre }}"
+        required
+    >
+</div>
+
+<div class="mb-3">
+    <label class="form-label">Descripción</label>
+    <textarea
+        name="descripcion"
+        class="form-control"
+        rows="4"
+        required
+    >{{ producto.descripcion }}</textarea>
+</div>
+
+<div class="mb-3">
+    <label class="form-label">Precio</label>
+    <input
+        type="number"
+        name="precio"
+        class="form-control"
+        value="{{ producto.precio }}"
+        step="0.01"
+        min="0"
+        required
+    >
+</div>
+
+<div class="mb-3">
+    <label class="form-label">Categoría</label>
+    <select name="categoria" class="form-select" required>
+        {% for categoria in categorias %}
+            <option
+                value="{{ categoria.id }}"
+                {% if categoria.id == producto.categoria_id %}selected{% endif %}
+            >
+                {{ categoria.nombre }}
+            </option>
+        {% endfor %}
+    </select>
+</div>
+
+<div class="mb-3">
+    <label class="form-label">Marca</label>
+    <select name="marca" class="form-select" required>
+        {% for marca in marcas %}
+            <option
+                value="{{ marca.id }}"
+                {% if marca.id == producto.marca_id %}selected{% endif %}
+            >
+                {{ marca.nombre }}
+            </option>
+        {% endfor %}
+    </select>
+</div>
+
+<div class="mb-3">
+    <label class="form-label">Proveedor</label>
+    <select name="proveedor" class="form-select" required>
+        {% for proveedor in proveedores %}
+            <option
+                value="{{ proveedor.id }}"
+                {% if proveedor.id == producto.proveedor_id %}selected{% endif %}
+            >
+                {{ proveedor.nombre }}
+            </option>
+        {% endfor %}
+    </select>
+</div>
+
+{% endblock %}

@@ -1,0 +1,9 @@
+{% extends 'catalogo/crud/eliminar.html' %}
+
+{% block objeto %}
+    {{ inventario }}
+{% endblock %}
+
+{% block url_lista %}
+    {% url 'catalogo:lista_inventarios' %}
+{% endblock %}

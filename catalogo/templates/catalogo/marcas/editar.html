@@ -1,0 +1,33 @@
+{% extends 'catalogo/crud/formulario.html' %}
+
+{% block titulo_pagina %}Editar marca{% endblock %}
+
+{% block titulo %}Editar marca{% endblock %}
+
+{% block url_lista %}
+    {% url 'catalogo:lista_marcas' %}
+{% endblock %}
+
+{% block formulario %}
+
+<div class="mb-3">
+    <label class="form-label">Nombre</label>
+    <input
+        type="text"
+        name="nombre"
+        class="form-control"
+        value="{{ marca.nombre }}"
+        required
+    >
+</div>
+
+<div class="mb-3">
+    <label class="form-label">Descripción</label>
+    <textarea
+        name="descripcion"
+        class="form-control"
+        rows="4"
+    >{{ marca.descripcion }}</textarea>
+</div>
+
+{% endblock %}
