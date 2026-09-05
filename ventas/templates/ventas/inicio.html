@@ -1,0 +1,91 @@
+{% extends 'ventas/base.html' %}
+
+{% block title %}Ventas | Tienda Online{% endblock %}
+
+{% block content %}
+
+<div class="text-center mb-5">
+    <h1 class="fw-semibold mb-2">
+        Gestión de ventas
+    </h1>
+
+    <p class="text-secondary mb-0">
+        Administra pedidos, detalles, pagos, envíos y cupones.
+    </p>
+</div>
+
+<div class="row g-4">
+
+    <div class="col-12 col-sm-6 col-lg-4">
+        <div class="card h-100 shadow-sm">
+            <div class="card-body">
+                <h5 class="card-title fw-semibold">Pedidos</h5>
+                <p class="card-text text-secondary">
+                    Registra y gestiona los pedidos de los clientes.
+                </p>
+                <a href="{% url 'ventas:lista_pedidos' %}" class="btn btn-outline-dark btn-sm">
+                    Ver pedidos
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-12 col-sm-6 col-lg-4">
+        <div class="card h-100 shadow-sm">
+            <div class="card-body">
+                <h5 class="card-title fw-semibold">Detalles de pedido</h5>
+                <p class="card-text text-secondary">
+                    Administra los productos de cada pedido.
+                </p>
+                <a href="{% url 'ventas:lista_detalles' %}" class="btn btn-outline-dark btn-sm">
+                    Ver detalles
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-12 col-sm-6 col-lg-4">
+        <div class="card h-100 shadow-sm">
+            <div class="card-body">
+                <h5 class="card-title fw-semibold">Pagos</h5>
+                <p class="card-text text-secondary">
+                    Gestiona los pagos de los pedidos.
+                </p>
+                <a href="{% url 'ventas:lista_pagos' %}" class="btn btn-outline-dark btn-sm">
+                    Ver pagos
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-12 col-sm-6 col-lg-4">
+        <div class="card h-100 shadow-sm">
+            <div class="card-body">
+                <h5 class="card-title fw-semibold">Envíos</h5>
+                <p class="card-text text-secondary">
+                    Administra los envíos de los pedidos.
+                </p>
+                <a href="{% url 'ventas:lista_envios' %}" class="btn btn-outline-dark btn-sm">
+                    Ver envíos
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-12 col-sm-6 col-lg-4">
+        <div class="card h-100 shadow-sm">
+            <div class="card-body">
+                <h5 class="card-title fw-semibold">Cupones</h5>
+                <p class="card-text text-secondary">
+                    Gestiona los cupones de descuento.
+                </p>
+                <a href="{% url 'ventas:lista_cupones' %}" class="btn btn-outline-dark btn-sm">
+                    Ver cupones
+                </a>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+{% endblock %}

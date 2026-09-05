@@ -1,10 +1,12 @@
 from django.urls import path
+from django.views.generic import RedirectView
 from . import views
 
 urlpatterns = [
     # Cliente CRUD
     path('clientes/', views.cliente_list, name='cliente_list'),
     path('clientes/crear/', views.cliente_create, name='crear_cliente'),
+    path('clientes/editar/', RedirectView.as_view(pattern_name='cliente_list', permanent=False)),
     path('clientes/<int:pk>/', views.cliente_detail, name='cliente_detail'),
     path('clientes/<int:pk>/editar/', views.cliente_update, name='editar_cliente'),
     path('clientes/<int:pk>/eliminar/', views.cliente_delete, name='eliminar_cliente'),

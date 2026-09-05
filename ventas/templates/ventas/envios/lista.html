@@ -1,0 +1,71 @@
+{% extends 'ventas/crud/lista.html' %}
+
+{% block titulo_pagina %}Envíos{% endblock %}
+
+{% block titulo %}Envíos{% endblock %}
+
+{% block descripcion %}
+    Gestiona los envíos de los pedidos.
+{% endblock %}
+
+{% block url_crear %}
+    {% url 'ventas:crear_envio' %}
+{% endblock %}
+
+{% block encabezado %}
+<tr>
+    <th>ID</th>
+    <th>Pedido</th>
+    <th>Dirección</th>
+    <th>Empresa</th>
+    <th>Estado</th>
+    <th class="text-end">Acciones</th>
+</tr>
+{% endblock %}
+
+{% block filas %}
+
+{% for envio in envios %}
+<tr>
+    <td>{{ envio.id_envio }}</td>
+
+    <td class="fw-semibold">{{ envio.pedido.id_pedido }}</td>
+
+    <td>{{ envio.direccion }}</td>
+
+    <td>{{ envio.empresa_envio }}</td>
+
+    <td>
+        <span class="badge text-bg-light">{{ envio.estado }}</span>
+    </td>
+
+    <td class="text-end">
+
+        <a
+            href="{% url 'ventas:editar_envio' envio.id_envio %}"
+            class="btn btn-sm btn-outline-primary"
+        >
+            Editar
+        </a>
+
+        <a
+            href="{% url 'ventas:eliminar_envio' envio.id_envio %}"
+            class="btn btn-sm btn-outline-danger"
+        >
+            Eliminar
+        </a>
+
+    </td>
+</tr>
+
+{% empty %}
+
+<tr>
+    <td colspan="6" class="text-center py-5 text-muted">
+        No hay envíos registrados.
+    </td>
+</tr>
+
+{% endfor %}
+
+{% endblock %}

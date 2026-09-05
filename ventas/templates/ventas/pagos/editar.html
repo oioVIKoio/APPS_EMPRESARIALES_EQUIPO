@@ -1,0 +1,68 @@
+{% extends 'ventas/crud/formulario.html' %}
+
+{% block titulo_pagina %}Editar pago{% endblock %}
+
+{% block titulo %}Editar pago{% endblock %}
+
+{% block url_lista %}
+    {% url 'ventas:lista_pagos' %}
+{% endblock %}
+
+{% block formulario %}
+
+<div class="mb-3">
+    <label class="form-label">Pedido</label>
+    <select name="pedido" class="form-select" required>
+        {% for pedido in pedidos %}
+            <option
+                value="{{ pedido.id_pedido }}"
+                {% if pedido.id_pedido == pago.pedido_id %}selected{% endif %}
+            >
+                {{ pedido }}
+            </option>
+        {% endfor %}
+    </select>
+</div>
+
+<div class="mb-3">
+    <label class="form-label">Método de pago</label>
+    <select name="metodo_pago" class="form-select" required>
+        {% for metodo in metodos_pago %}
+            <option
+                value="{{ metodo.id_pago }}"
+                {% if metodo.id_pago == pago.metodo_pago_id %}selected{% endif %}
+            >
+                {{ metodo }}
+            </option>
+        {% endfor %}
+    </select>
+</div>
+
+<div class="mb-3">
+    <label class="form-label">Monto</label>
+    <input
+        type="number"
+        name="monto"
+        class="form-control"
+        step="0.01"
+        min="0"
+        value="{{ pago.monto }}"
+        required
+    >
+</div>
+
+<div class="mb-3">
+    <label class="form-label">Estado</label>
+    <select name="estado" class="form-select">
+        {% for opcion in opciones_estado %}
+            <option
+                value="{{ opcion }}"
+                {% if opcion == pago.estado %}selected{% endif %}
+            >
+                {{ opcion }}
+            </option>
+        {% endfor %}
+    </select>
+</div>
+
+{% endblock %}

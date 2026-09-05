@@ -1,0 +1,72 @@
+{% extends 'ventas/crud/lista.html' %}
+
+{% block titulo_pagina %}Detalles de pedido{% endblock %}
+
+{% block titulo %}Detalles de pedido{% endblock %}
+
+{% block descripcion %}
+    Gestiona los productos de cada pedido.
+{% endblock %}
+
+{% block url_crear %}
+    {% url 'ventas:crear_detalle' %}
+{% endblock %}
+
+{% block encabezado %}
+<tr>
+    <th>ID</th>
+    <th>Pedido</th>
+    <th>Producto</th>
+    <th>Cantidad</th>
+    <th>Precio unitario</th>
+    <th>Subtotal</th>
+    <th class="text-end">Acciones</th>
+</tr>
+{% endblock %}
+
+{% block filas %}
+
+{% for detalle in detalles %}
+<tr>
+    <td>{{ detalle.id_detalle }}</td>
+
+    <td class="fw-semibold">{{ detalle.pedido.id_pedido }}</td>
+
+    <td>{{ detalle.producto.nombre }}</td>
+
+    <td>{{ detalle.cantidad }}</td>
+
+    <td>S/ {{ detalle.precio_unitario }}</td>
+
+    <td class="fw-semibold">S/ {{ detalle.subtotal }}</td>
+
+    <td class="text-end">
+
+        <a
+            href="{% url 'ventas:editar_detalle' detalle.id_detalle %}"
+            class="btn btn-sm btn-outline-primary"
+        >
+            Editar
+        </a>
+
+        <a
+            href="{% url 'ventas:eliminar_detalle' detalle.id_detalle %}"
+            class="btn btn-sm btn-outline-danger"
+        >
+            Eliminar
+        </a>
+
+    </td>
+</tr>
+
+{% empty %}
+
+<tr>
+    <td colspan="7" class="text-center py-5 text-muted">
+        No hay detalles de pedido registrados.
+    </td>
+</tr>
+
+{% endfor %}
+
+{% endblock %}

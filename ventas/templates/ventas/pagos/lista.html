@@ -1,0 +1,76 @@
+{% extends 'ventas/crud/lista.html' %}
+
+{% block titulo_pagina %}Pagos{% endblock %}
+
+{% block titulo %}Pagos{% endblock %}
+
+{% block descripcion %}
+    Gestiona los pagos de los pedidos.
+{% endblock %}
+
+{% block url_crear %}
+    {% url 'ventas:crear_pago' %}
+{% endblock %}
+
+{% block encabezado %}
+<tr>
+    <th>ID</th>
+    <th>Pedido</th>
+    <th>Método de pago</th>
+    <th>Monto</th>
+    <th>Estado</th>
+    <th>Fecha</th>
+    <th class="text-end">Acciones</th>
+</tr>
+{% endblock %}
+
+{% block filas %}
+
+{% for pago in pagos %}
+<tr>
+    <td>{{ pago.id_pago }}</td>
+
+    <td class="fw-semibold">{{ pago.pedido.id_pedido }}</td>
+
+    <td>{{ pago.metodo_pago }}</td>
+
+    <td>S/ {{ pago.monto }}</td>
+
+    <td>
+        <span class="badge text-bg-light">{{ pago.estado }}</span>
+    </td>
+
+    <td>
+        {{ pago.fecha_pago|date:"d/m/Y H:i"|default:"-" }}
+    </td>
+
+    <td class="text-end">
+
+        <a
+            href="{% url 'ventas:editar_pago' pago.id_pago %}"
+            class="btn btn-sm btn-outline-primary"
+        >
+            Editar
+        </a>
+
+        <a
+            href="{% url 'ventas:eliminar_pago' pago.id_pago %}"
+            class="btn btn-sm btn-outline-danger"
+        >
+            Eliminar
+        </a>
+
+    </td>
+</tr>
+
+{% empty %}
+
+<tr>
+    <td colspan="7" class="text-center py-5 text-muted">
+        No hay pagos registrados.
+    </td>
+</tr>
+
+{% endfor %}
+
+{% endblock %}

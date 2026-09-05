@@ -1,0 +1,60 @@
+{% extends 'ventas/crud/formulario.html' %}
+
+{% block titulo_pagina %}Nuevo pago{% endblock %}
+
+{% block titulo %}Nuevo pago{% endblock %}
+
+{% block url_lista %}
+    {% url 'ventas:lista_pagos' %}
+{% endblock %}
+
+{% block formulario %}
+
+<div class="mb-3">
+    <label class="form-label">Pedido</label>
+    <select name="pedido" class="form-select" required>
+        <option value="">Seleccionar pedido</option>
+
+        {% for pedido in pedidos %}
+            <option value="{{ pedido.id_pedido }}">
+                {{ pedido }}
+            </option>
+        {% endfor %}
+    </select>
+</div>
+
+<div class="mb-3">
+    <label class="form-label">Método de pago</label>
+    <select name="metodo_pago" class="form-select" required>
+        <option value="">Seleccionar método de pago</option>
+
+        {% for metodo in metodos_pago %}
+            <option value="{{ metodo.id_pago }}">
+                {{ metodo }}
+            </option>
+        {% endfor %}
+    </select>
+</div>
+
+<div class="mb-3">
+    <label class="form-label">Monto</label>
+    <input
+        type="number"
+        name="monto"
+        class="form-control"
+        step="0.01"
+        min="0"
+        required
+    >
+</div>
+
+<div class="mb-3">
+    <label class="form-label">Estado</label>
+    <select name="estado" class="form-select">
+        <option value="Pendiente" selected>Pendiente</option>
+        <option value="Completado">Completado</option>
+        <option value="Rechazado">Rechazado</option>
+    </select>
+</div>
+
+{% endblock %}

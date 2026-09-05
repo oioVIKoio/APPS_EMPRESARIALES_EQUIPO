@@ -1,0 +1,66 @@
+{% extends 'ventas/crud/formulario.html' %}
+
+{% block titulo_pagina %}Editar envío{% endblock %}
+
+{% block titulo %}Editar envío{% endblock %}
+
+{% block url_lista %}
+    {% url 'ventas:lista_envios' %}
+{% endblock %}
+
+{% block formulario %}
+
+<div class="mb-3">
+    <label class="form-label">Pedido</label>
+    <select name="pedido" class="form-select" required>
+        {% for pedido in pedidos %}
+            <option
+                value="{{ pedido.id_pedido }}"
+                {% if pedido.id_pedido == envio.pedido_id %}selected{% endif %}
+            >
+                {{ pedido }}
+            </option>
+        {% endfor %}
+    </select>
+</div>
+
+<div class="mb-3">
+    <label class="form-label">Dirección</label>
+    <select name="direccion" class="form-select" required>
+        {% for direccion in direcciones %}
+            <option
+                value="{{ direccion.id_direccion }}"
+                {% if direccion.id_direccion == envio.direccion_id %}selected{% endif %}
+            >
+                {{ direccion }}
+            </option>
+        {% endfor %}
+    </select>
+</div>
+
+<div class="mb-3">
+    <label class="form-label">Empresa de envío</label>
+    <input
+        type="text"
+        name="empresa_envio"
+        class="form-control"
+        value="{{ envio.empresa_envio }}"
+        required
+    >
+</div>
+
+<div class="mb-3">
+    <label class="form-label">Estado</label>
+    <select name="estado" class="form-select">
+        {% for opcion in opciones_estado %}
+            <option
+                value="{{ opcion }}"
+                {% if opcion == envio.estado %}selected{% endif %}
+            >
+                {{ opcion }}
+            </option>
+        {% endfor %}
+    </select>
+</div>
+
+{% endblock %}

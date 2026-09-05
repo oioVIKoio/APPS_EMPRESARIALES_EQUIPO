@@ -1,0 +1,63 @@
+{% extends 'ventas/crud/formulario.html' %}
+
+{% block titulo_pagina %}Nuevo detalle de pedido{% endblock %}
+
+{% block titulo %}Nuevo detalle de pedido{% endblock %}
+
+{% block url_lista %}
+    {% url 'ventas:lista_detalles' %}
+{% endblock %}
+
+{% block formulario %}
+
+<div class="mb-3">
+    <label class="form-label">Pedido</label>
+    <select name="pedido" class="form-select" required>
+        <option value="">Seleccionar pedido</option>
+
+        {% for pedido in pedidos %}
+            <option value="{{ pedido.id_pedido }}">
+                {{ pedido }}
+            </option>
+        {% endfor %}
+    </select>
+</div>
+
+<div class="mb-3">
+    <label class="form-label">Producto</label>
+    <select name="producto" class="form-select" required>
+        <option value="">Seleccionar producto</option>
+
+        {% for producto in productos %}
+            <option value="{{ producto.id }}">
+                {{ producto.nombre }}
+            </option>
+        {% endfor %}
+    </select>
+</div>
+
+<div class="mb-3">
+    <label class="form-label">Cantidad</label>
+    <input
+        type="number"
+        name="cantidad"
+        class="form-control"
+        min="1"
+        value="1"
+        required
+    >
+</div>
+
+<div class="mb-3">
+    <label class="form-label">Precio unitario</label>
+    <input
+        type="number"
+        name="precio_unitario"
+        class="form-control"
+        step="0.01"
+        min="0"
+        required
+    >
+</div>
+
+{% endblock %}

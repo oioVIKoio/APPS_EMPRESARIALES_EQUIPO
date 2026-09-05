@@ -1,0 +1,9 @@
+{% extends 'ventas/crud/eliminar.html' %}
+
+{% block url_lista %}
+    {% url 'ventas:lista_detalles' %}
+{% endblock %}
+
+{% block objeto %}
+    {{ detalle }}
+{% endblock %}

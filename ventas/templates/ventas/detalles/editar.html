@@ -1,0 +1,66 @@
+{% extends 'ventas/crud/formulario.html' %}
+
+{% block titulo_pagina %}Editar detalle de pedido{% endblock %}
+
+{% block titulo %}Editar detalle de pedido{% endblock %}
+
+{% block url_lista %}
+    {% url 'ventas:lista_detalles' %}
+{% endblock %}
+
+{% block formulario %}
+
+<div class="mb-3">
+    <label class="form-label">Pedido</label>
+    <select name="pedido" class="form-select" required>
+        {% for pedido in pedidos %}
+            <option
+                value="{{ pedido.id_pedido }}"
+                {% if pedido.id_pedido == detalle.pedido_id %}selected{% endif %}
+            >
+                {{ pedido }}
+            </option>
+        {% endfor %}
+    </select>
+</div>
+
+<div class="mb-3">
+    <label class="form-label">Producto</label>
+    <select name="producto" class="form-select" required>
+        {% for producto in productos %}
+            <option
+                value="{{ producto.id }}"
+                {% if producto.id == detalle.producto_id %}selected{% endif %}
+            >
+                {{ producto.nombre }}
+            </option>
+        {% endfor %}
+    </select>
+</div>
+
+<div class="mb-3">
+    <label class="form-label">Cantidad</label>
+    <input
+        type="number"
+        name="cantidad"
+        class="form-control"
+        min="1"
+        value="{{ detalle.cantidad }}"
+        required
+    >
+</div>
+
+<div class="mb-3">
+    <label class="form-label">Precio unitario</label>
+    <input
+        type="number"
+        name="precio_unitario"
+        class="form-control"
+        step="0.01"
+        min="0"
+        value="{{ detalle.precio_unitario }}"
+        required
+    >
+</div>
+
+{% endblock %}

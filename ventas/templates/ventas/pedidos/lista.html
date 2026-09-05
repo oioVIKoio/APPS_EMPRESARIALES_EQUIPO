@@ -1,0 +1,71 @@
+{% extends 'ventas/crud/lista.html' %}
+
+{% block titulo_pagina %}Pedidos{% endblock %}
+
+{% block titulo %}Pedidos{% endblock %}
+
+{% block descripcion %}
+    Gestiona los pedidos de los clientes.
+{% endblock %}
+
+{% block url_crear %}
+    {% url 'ventas:crear_pedido' %}
+{% endblock %}
+
+{% block encabezado %}
+<tr>
+    <th>ID</th>
+    <th>Cliente</th>
+    <th>Fecha</th>
+    <th>Estado</th>
+    <th>Total</th>
+    <th class="text-end">Acciones</th>
+</tr>
+{% endblock %}
+
+{% block filas %}
+
+{% for pedido in pedidos %}
+<tr>
+    <td>{{ pedido.id_pedido }}</td>
+
+    <td class="fw-semibold">{{ pedido.cliente }}</td>
+
+    <td>{{ pedido.fecha_pedido|date:"d/m/Y H:i" }}</td>
+
+    <td>
+        <span class="badge text-bg-light">{{ pedido.estado }}</span>
+    </td>
+
+    <td>S/ {{ pedido.total }}</td>
+
+    <td class="text-end">
+
+        <a
+            href="{% url 'ventas:editar_pedido' pedido.id_pedido %}"
+            class="btn btn-sm btn-outline-primary"
+        >
+            Editar
+        </a>
+
+        <a
+            href="{% url 'ventas:eliminar_pedido' pedido.id_pedido %}"
+            class="btn btn-sm btn-outline-danger"
+        >
+            Eliminar
+        </a>
+
+    </td>
+</tr>
+
+{% empty %}
+
+<tr>
+    <td colspan="6" class="text-center py-5 text-muted">
+        No hay pedidos registrados.
+    </td>
+</tr>
+
+{% endfor %}
+
+{% endblock %}

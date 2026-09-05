@@ -1,0 +1,59 @@
+{% extends 'ventas/crud/formulario.html' %}
+
+{% block titulo_pagina %}Nuevo envío{% endblock %}
+
+{% block titulo %}Nuevo envío{% endblock %}
+
+{% block url_lista %}
+    {% url 'ventas:lista_envios' %}
+{% endblock %}
+
+{% block formulario %}
+
+<div class="mb-3">
+    <label class="form-label">Pedido</label>
+    <select name="pedido" class="form-select" required>
+        <option value="">Seleccionar pedido</option>
+
+        {% for pedido in pedidos %}
+            <option value="{{ pedido.id_pedido }}">
+                {{ pedido }}
+            </option>
+        {% endfor %}
+    </select>
+</div>
+
+<div class="mb-3">
+    <label class="form-label">Dirección</label>
+    <select name="direccion" class="form-select" required>
+        <option value="">Seleccionar dirección</option>
+
+        {% for direccion in direcciones %}
+            <option value="{{ direccion.id_direccion }}">
+                {{ direccion }}
+            </option>
+        {% endfor %}
+    </select>
+</div>
+
+<div class="mb-3">
+    <label class="form-label">Empresa de envío</label>
+    <input
+        type="text"
+        name="empresa_envio"
+        class="form-control"
+        required
+    >
+</div>
+
+<div class="mb-3">
+    <label class="form-label">Estado</label>
+    <select name="estado" class="form-select">
+        <option value="Pendiente" selected>Pendiente</option>
+        <option value="En tránsito">En tránsito</option>
+        <option value="Entregado">Entregado</option>
+        <option value="Devuelto">Devuelto</option>
+    </select>
+</div>
+
+{% endblock %}

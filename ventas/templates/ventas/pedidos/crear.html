@@ -1,0 +1,50 @@
+{% extends 'ventas/crud/formulario.html' %}
+
+{% block titulo_pagina %}Nuevo pedido{% endblock %}
+
+{% block titulo %}Nuevo pedido{% endblock %}
+
+{% block url_lista %}
+    {% url 'ventas:lista_pedidos' %}
+{% endblock %}
+
+{% block formulario %}
+
+<div class="mb-3">
+    <label class="form-label">Cliente</label>
+    <select name="cliente" class="form-select" required>
+        <option value="">Seleccionar cliente</option>
+
+        {% for cliente in clientes %}
+            <option value="{{ cliente.id_cliente }}">
+                {{ cliente }}
+            </option>
+        {% endfor %}
+    </select>
+</div>
+
+<div class="mb-3">
+    <label class="form-label">Estado</label>
+    <select name="estado" class="form-select">
+        <option value="Pendiente" selected>Pendiente</option>
+        <option value="Confirmado">Confirmado</option>
+        <option value="Enviado">Enviado</option>
+        <option value="Entregado">Entregado</option>
+        <option value="Cancelado">Cancelado</option>
+    </select>
+</div>
+
+<div class="mb-3">
+    <label class="form-label">Total</label>
+    <input
+        type="number"
+        name="total"
+        class="form-control"
+        step="0.01"
+        min="0"
+        value="0"
+        required
+    >
+</div>
+
+{% endblock %}
