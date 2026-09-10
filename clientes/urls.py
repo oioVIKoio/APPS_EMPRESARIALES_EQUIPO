@@ -16,4 +16,12 @@ urlpatterns = [
     path('carritos/', views.carrito_list, name='carrito_list'),
     path('direcciones/', views.direccion_list, name='direccion_list'),
     path('resenas/', views.resena_list, name='resena_list'),
+
+    #vistas con optimizacion de relaciones
+    path('cliente/<int:pk>/perfil/', views.cliente_perfil_detail, name='cliente_perfil_detail'),
+    path('cliente/<int:pk>/favoritos/', views.cliente_favoritos_list, name='cliente_favoritos_list'),
+
+    path('favoritos/crear/', views.favorito_create, name='favorito_create'),
+    path('favoritos/<int:pk>/editar/', views.favorito_update, name='favorito_update'),
+    path('favoritos/<int:pk>/eliminar/', views.favorito_delete, name='favorito_delete'),
 ]

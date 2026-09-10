@@ -10,6 +10,12 @@ class Cliente(models.Model):
     telefono = models.CharField(max_length=15)
     fecha_registro = models.DateTimeField(auto_now_add=True)
 
+    productos_favoritos = models.ManyToManyField(
+        'catalogo.Producto',
+        through='Favorito',
+        related_name='clientes_que_lo_favoritearon'
+    )
+
     def __str__(self):
         return f"{self.nombre} {self.apellido} ({self.email})"
 
@@ -85,3 +91,37 @@ class Resena(models.Model):
     class Meta:
         verbose_name = "Reseña"
         verbose_name_plural = "Reseñas"
+
+class PerfilCliente(models.Model):
+    cliente = models.OneToOneField(
+        Cliente,
+        on_delete=models.CASCADE,
+        related_name='perfil'
+    )
+    fecha_nacimiento = models.DateField(null=True, blank=True)
+    genero = models.CharField(max_length=20, blank=True)
+    recibir_newsletter = models.BooleanField(default=True)
+    preferencias = models.TextField(blank=True)
+
+    def __str__(self):
+        return f"Perfil de {self.cliente.nombre}"
+
+class Favorito(models.Model):
+    cliente = models.ForeignKey(
+        Cliente,
+        on_delete=models.CASCADE,
+        related_name='favoritos'
+    )
+    producto = models.ForeignKey(
+        'catalogo.Producto',
+        on_delete=models.CASCADE,
+        related_name='favorito_de'
+    )
+    fecha_agregado = models.DateTimeField(auto_now_add=True)
+    notificar_oferta = models.BooleanField(default=False)
+
+    class Meta:
+        unique_together = ('cliente', 'producto')
+
+    def __str__(self):
+        return f"{self.cliente.nombre} ♥ {self.producto.nombre}"

@@ -42,6 +42,12 @@
                                     <td>{{ cliente.telefono }}</td>
                                     <td>{{ cliente.fecha_registro|date:"d/m/Y H:i" }}</td>
                                     <td class="text-center">
+                                        <a href="{% url 'cliente_perfil_detail' cliente.id_cliente %}" class="btn btn-sm btn-outline-info me-1" title="Ver Perfil 1:1">
+                                            Perfil
+                                        </a>
+                                        <a href="{% url 'cliente_favoritos_list' cliente.id_cliente %}" class="btn btn-sm btn-outline-light me-1" title="Ver Favoritos N:M">
+                                            Favoritos
+                                        </a>
                                         <a href="{% url 'editar_cliente' cliente.id_cliente %}" class="btn btn-sm btn-outline-warning me-1">
                                             Editar
                                         </a>
