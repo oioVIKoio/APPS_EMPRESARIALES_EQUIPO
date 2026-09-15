@@ -8,7 +8,7 @@ from catalogo.models import Producto
 # Inicio
 # ---------------------------------------------------------------------------
 def inicio(request):
-    pedidos = Pedido.objects.all()
+    pedidos = Pedido.objects.select_related('cliente').prefetch_related('detalles__producto').order_by('-fecha_pedido')
 
     return render(
         request,
@@ -21,7 +21,7 @@ def inicio(request):
 # Pedido
 # ---------------------------------------------------------------------------
 def lista_pedidos(request):
-    pedidos = Pedido.objects.order_by('-fecha_pedido')
+    pedidos = Pedido.objects.select_related('cliente').prefetch_related('detalles__producto').order_by('-fecha_pedido')
 
     return render(
         request,
@@ -92,7 +92,7 @@ def eliminar_pedido(request, id):
 # DetallePedido
 # ---------------------------------------------------------------------------
 def lista_detalles(request):
-    detalles = DetallePedido.objects.select_related('pedido', 'producto')
+    detalles = DetallePedido.objects.select_related('pedido__cliente', 'producto').prefetch_related('pedido__detalles')
 
     return render(
         request,
@@ -178,7 +178,7 @@ def eliminar_detalle(request, id):
 # Pago
 # ---------------------------------------------------------------------------
 def lista_pagos(request):
-    pagos = Pago.objects.select_related('pedido', 'metodo_pago')
+    pagos = Pago.objects.select_related('pedido__cliente', 'metodo_pago')
 
     return render(
         request,
@@ -257,7 +257,7 @@ def eliminar_pago(request, id):
 # Envio
 # ---------------------------------------------------------------------------
 def lista_envios(request):
-    envios = Envio.objects.select_related('pedido', 'direccion')
+    envios = Envio.objects.select_related('pedido__cliente', 'direccion')
 
     return render(
         request,

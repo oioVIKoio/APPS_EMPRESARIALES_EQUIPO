@@ -10,6 +10,12 @@ class Pedido(models.Model):
         related_name='pedidos'
     )
 
+    productos = models.ManyToManyField(
+        'catalogo.Producto',
+        through='DetallePedido',
+        related_name='pedidos'
+    )
+
     fecha_pedido = models.DateTimeField(auto_now_add=True)
 
     estado = models.CharField(

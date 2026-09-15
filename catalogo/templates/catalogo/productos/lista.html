@@ -51,6 +51,13 @@
         </a>
 
         <a
+            href="{% url 'favorito_create' %}?producto={{ producto.id }}"
+            class="btn btn-sm btn-outline-warning"
+        >
+            Favorito
+        </a>
+
+        <a
             href="{% url 'catalogo:eliminar_producto' producto.id %}"
             class="btn btn-sm btn-outline-danger"
         >

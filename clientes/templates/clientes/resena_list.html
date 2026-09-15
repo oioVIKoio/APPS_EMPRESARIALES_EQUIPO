@@ -1,0 +1,42 @@
+{% extends 'clientes/base.html' %}
+
+{% block title %}Reseñas{% endblock %}
+
+{% block content %}
+<div class="mb-4">
+    <span class="section-label">Clientes</span>
+    <h1 class="page-title mb-2">Reseñas</h1>
+    <p class="text-muted mb-0">Opiniones y calificaciones registradas.</p>
+</div>
+
+<div class="card border-0">
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Cliente</th>
+                        <th>Comentario</th>
+                        <th>Calificación</th>
+                        <th>Fecha</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for resena in resenas %}
+                    <tr>
+                        <td>#{{ resena.id_resena }}</td>
+                        <td>{{ resena.cliente.nombre }} {{ resena.cliente.apellido }}</td>
+                        <td>{{ resena.comentario }}</td>
+                        <td><span class="badge text-bg-warning">{{ resena.calificacion }}/5</span></td>
+                        <td>{{ resena.fecha|date:"d/m/Y" }}</td>
+                    </tr>
+                    {% empty %}
+                    <tr><td colspan="5" class="text-center text-muted py-4">No hay reseñas registradas.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

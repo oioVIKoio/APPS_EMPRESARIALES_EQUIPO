@@ -93,7 +93,9 @@ def favorito_create(request):
             fav = form.save()
             return redirect('cliente_favoritos_list', pk=fav.cliente.pk)
     else:
-        form = FavoritoForm()
+        producto_id = request.GET.get('producto')
+        initial = {'producto': producto_id} if producto_id else None
+        form = FavoritoForm(initial=initial)
     return render(request, 'clientes/favorito_form.html', {'form': form, 'titulo': 'Agregar a Favoritos'})
 
 def favorito_update(request, pk):

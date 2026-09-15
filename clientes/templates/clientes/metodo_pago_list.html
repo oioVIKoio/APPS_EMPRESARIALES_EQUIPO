@@ -1,0 +1,48 @@
+{% extends 'clientes/base.html' %}
+
+{% block title %}Métodos de pago{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <span class="section-label">Clientes</span>
+        <h1 class="page-title mb-2">Métodos de pago</h1>
+        <p class="text-muted mb-0">Métodos disponibles para procesar las compras.</p>
+    </div>
+</div>
+
+<div class="card border-0">
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Tipo</th>
+                        <th>Proveedor</th>
+                        <th>Estado</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for metodo in metodos %}
+                    <tr>
+                        <td>#{{ metodo.id_pago }}</td>
+                        <td>{{ metodo.tipo }}</td>
+                        <td>{{ metodo.proveedor }}</td>
+                        <td>
+                            {% if metodo.activo %}
+                            <span class="badge text-bg-success">Activo</span>
+                            {% else %}
+                            <span class="badge text-bg-secondary">Inactivo</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr><td colspan="4" class="text-center text-muted py-4">No hay métodos de pago registrados.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

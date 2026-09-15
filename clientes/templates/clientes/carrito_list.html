@@ -1,0 +1,38 @@
+{% extends 'clientes/base.html' %}
+
+{% block title %}Carritos{% endblock %}
+
+{% block content %}
+<div class="mb-4">
+    <span class="section-label">Clientes</span>
+    <h1 class="page-title mb-2">Carritos</h1>
+    <p class="text-muted mb-0">Consulta el estado de los carritos registrados.</p>
+</div>
+
+<div class="card border-0">
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Fecha de creación</th>
+                        <th>Estado</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for carrito in carritos %}
+                    <tr>
+                        <td>#{{ carrito.id_carrito }}</td>
+                        <td>{{ carrito.fecha_creacion|date:"d/m/Y H:i" }}</td>
+                        <td><span class="badge text-bg-primary">{{ carrito.estado }}</span></td>
+                    </tr>
+                    {% empty %}
+                    <tr><td colspan="3" class="text-center text-muted py-4">No hay carritos registrados.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}
