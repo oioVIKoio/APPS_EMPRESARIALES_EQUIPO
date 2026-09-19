@@ -45,8 +45,51 @@ El proyecto utiliza relaciones entre modelos mediante Django ORM.
 ## Equipo
 
 * Diego — App `clientes`
-* Victor — App `catalogo`
-* Davila — App `ventas`
+* Victor — App `catalogo y ventas `
+
+## Administración con Django Admin
+
+Durante la Semana 5 se configuró y personalizó Django Admin para facilitar
+la gestión de los datos del sistema.
+
+### Modelos administrados
+
+En el módulo `clientes` se registraron las siguientes entidades:
+
+- Cliente
+- MetodoPago
+- Carrito
+- Direccion
+- Resena
+- PerfilCliente
+- Favorito
+
+### Personalización de ModelAdmin
+
+Se personalizaron distintas entidades utilizando `ModelAdmin`:
+
+- **Cliente:** utiliza `list_display` para mostrar sus datos principales,
+  `search_fields` para realizar búsquedas por nombre, apellido y correo,
+  y `list_filter` para filtrar por fecha de registro.
+- **Direccion:** utiliza `list_display` para mostrar los datos principales
+  de la dirección y `search_fields` para realizar búsquedas.
+- **Resena:** utiliza `list_display`, `search_fields` y `list_filter`
+  para facilitar la administración de las reseñas.
+
+### Gestión de relaciones mediante Inlines
+
+Se utilizaron Inlines para administrar relaciones directamente desde
+el formulario de Cliente:
+
+- **PerfilClienteInline (`StackedInline`):** permite administrar el perfil
+  relacionado mediante `OneToOneField` desde el mismo formulario del cliente.
+- **FavoritoInline (`TabularInline`):** permite administrar la relación
+  muchos a muchos entre Cliente y Producto mediante el modelo intermedio
+  `Favorito`, incluyendo atributos como `fecha_agregado` y
+  `notificar_oferta`.
+
+Esta configuración permite realizar operaciones CRUD desde Django Admin
+y gestionar las relaciones entre las entidades de forma centralizada.
 
 ## Ejecución
 
