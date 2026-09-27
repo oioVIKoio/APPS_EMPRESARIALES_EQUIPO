@@ -30,14 +30,20 @@
 <tr>
     <td>{{ pago.id_pago }}</td>
 
-    <td class="fw-semibold">{{ pago.pedido.id_pedido }}</td>
+    <td class="fw-semibold"><a href="{% url 'ventas:editar_pedido' pago.pedido_id %}">#{{ pago.pedido_id }}</a><small class="d-block text-muted">{{ pago.pedido.cliente.nombre }} {{ pago.pedido.cliente.apellido }}</small></td>
 
     <td>{{ pago.metodo_pago }}</td>
 
     <td>S/ {{ pago.monto }}</td>
 
     <td>
-        <span class="badge text-bg-light">{{ pago.estado }}</span>
+        {% if pago.estado == 'Completado' %}
+            <span class="badge text-bg-success">{{ pago.estado }}</span>
+        {% elif pago.estado == 'Rechazado' %}
+            <span class="badge text-bg-danger">{{ pago.estado }}</span>
+        {% else %}
+            <span class="badge text-bg-warning">{{ pago.estado }}</span>
+        {% endif %}
     </td>
 
     <td>

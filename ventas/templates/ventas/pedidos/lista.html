@@ -16,9 +16,11 @@
 <tr>
     <th>ID</th>
     <th>Cliente</th>
+    <th>Productos</th>
     <th>Fecha</th>
     <th>Estado</th>
     <th>Total</th>
+    <th>Pago / envío</th>
     <th class="text-end">Acciones</th>
 </tr>
 {% endblock %}
@@ -29,15 +31,48 @@
 <tr>
     <td>{{ pedido.id_pedido }}</td>
 
-    <td class="fw-semibold">{{ pedido.cliente }}</td>
+    <td class="fw-semibold"><a href="{% url 'cliente_detail' pedido.cliente_id %}">{{ pedido.cliente }}</a></td>
+
+    <td>
+        {% for detalle in pedido.detalles.all %}
+            <div class="small">
+                <a href="{% url 'catalogo:editar_producto' detalle.producto_id %}">{{ detalle.producto.nombre }}</a>
+                <span class="text-muted">× {{ detalle.cantidad }}</span>
+                <span class="text-muted">· S/ {{ detalle.subtotal }}</span>
+            </div>
+        {% empty %}
+            <span class="text-muted small">Sin productos</span>
+        {% endfor %}
+    </td>
 
     <td>{{ pedido.fecha_pedido|date:"d/m/Y H:i" }}</td>
 
     <td>
-        <span class="badge text-bg-light">{{ pedido.estado }}</span>
+        {% if pedido.estado == 'Entregado' %}
+            <span class="badge text-bg-success">{{ pedido.estado }}</span>
+        {% elif pedido.estado == 'Cancelado' %}
+            <span class="badge text-bg-danger">{{ pedido.estado }}</span>
+        {% elif pedido.estado == 'Pendiente' %}
+            <span class="badge text-bg-warning">{{ pedido.estado }}</span>
+        {% else %}
+            <span class="badge text-bg-info">{{ pedido.estado }}</span>
+        {% endif %}
     </td>
 
     <td>S/ {{ pedido.total }}</td>
+
+    <td>
+        {% if pedido.pago %}
+            <a href="{% url 'ventas:editar_pago' pedido.pago.id_pago %}" class="d-block small">Pago: {{ pedido.pago.estado }} · {{ pedido.pago.metodo_pago }}</a>
+        {% else %}
+            <span class="d-block text-muted small">Sin pago</span>
+        {% endif %}
+        {% if pedido.envio %}
+            <a href="{% url 'ventas:editar_envio' pedido.envio.id_envio %}" class="d-block small">Envío: {{ pedido.envio.estado }}</a>
+        {% else %}
+            <span class="d-block text-muted small">Sin envío</span>
+        {% endif %}
+    </td>
 
     <td class="text-end">
 
@@ -61,8 +96,8 @@
 {% empty %}
 
 <tr>
-    <td colspan="6" class="text-center py-5 text-muted">
-        No hay pedidos registrados.
+    <td colspan="8" class="text-center py-5 text-muted">
+        No hay pedidos registrados. Usa «Nuevo» para agregar el primero.
     </td>
 </tr>
 

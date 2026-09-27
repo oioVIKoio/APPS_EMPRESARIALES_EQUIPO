@@ -3,7 +3,7 @@ from .models import Categoria, Marca, Proveedor, Producto, Inventario
 
 
 def inicio(request):
-    productos = Producto.objects.all()
+    productos = Producto.objects.select_related('categoria', 'marca', 'proveedor', 'inventario')
 
     return render(
         request,
@@ -12,7 +12,7 @@ def inicio(request):
     )
 
 def lista_productos(request):
-    productos = Producto.objects.all()
+    productos = Producto.objects.select_related('categoria', 'marca', 'proveedor', 'inventario')
     return render(
         request,
         'catalogo/productos/lista.html',
@@ -256,7 +256,7 @@ def eliminar_proveedor(request, id):
     )
 
 def lista_inventarios(request):
-    inventarios = Inventario.objects.all()
+    inventarios = Inventario.objects.select_related('producto')
     return render(
         request,
         'catalogo/inventario/lista.html',

@@ -7,3 +7,7 @@
 {% block url_lista %}
     {% url 'catalogo:lista_productos' %}
 {% endblock %}
+
+{% block aviso_eliminar %}
+    <p class="small text-danger mb-4">También se eliminarán su inventario y los detalles de pedido asociados.</p>
+{% endblock %}

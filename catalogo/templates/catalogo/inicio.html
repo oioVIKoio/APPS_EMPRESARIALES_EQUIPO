@@ -51,6 +51,16 @@
                         Proveedor: {{ producto.proveedor.nombre }}
                     </small>
 
+                    {% if producto.inventario %}
+                        {% if producto.inventario.cantidad <= producto.inventario.stock_minimo %}
+                            <span class="badge text-bg-warning mt-2">Stock bajo · {{ producto.inventario.cantidad }}</span>
+                        {% else %}
+                            <span class="badge text-bg-success mt-2">Disponible · {{ producto.inventario.cantidad }}</span>
+                        {% endif %}
+                    {% else %}
+                        <span class="badge text-bg-secondary mt-2">Sin inventario</span>
+                    {% endif %}
+
                 </div>
 
                 <div class="d-flex justify-content-between align-items-center">

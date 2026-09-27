@@ -30,9 +30,9 @@
 <tr>
     <td>{{ detalle.id_detalle }}</td>
 
-    <td class="fw-semibold">{{ detalle.pedido.id_pedido }}</td>
+    <td class="fw-semibold"><a href="{% url 'ventas:editar_pedido' detalle.pedido_id %}">#{{ detalle.pedido_id }}</a><small class="d-block text-muted">{{ detalle.pedido.cliente.nombre }} {{ detalle.pedido.cliente.apellido }}</small></td>
 
-    <td>{{ detalle.producto.nombre }}</td>
+    <td><a href="{% url 'catalogo:editar_producto' detalle.producto_id %}">{{ detalle.producto.nombre }}</a></td>
 
     <td>{{ detalle.cantidad }}</td>
 

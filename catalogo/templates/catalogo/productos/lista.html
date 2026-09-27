@@ -18,6 +18,8 @@
     <th>Producto</th>
     <th>Categoría</th>
     <th>Marca</th>
+    <th>Proveedor</th>
+    <th>Inventario</th>
     <th>Precio</th>
     <th class="text-end">Acciones</th>
 </tr>
@@ -39,6 +41,22 @@
     <td>{{ producto.categoria.nombre }}</td>
 
     <td>{{ producto.marca.nombre }}</td>
+
+    <td>{{ producto.proveedor.nombre }}</td>
+
+    <td>
+        {% if producto.inventario %}
+            <a href="{% url 'catalogo:editar_inventario' producto.inventario.id %}" class="text-decoration-none">
+                {% if producto.inventario.cantidad <= producto.inventario.stock_minimo %}
+                    <span class="badge text-bg-warning">Stock bajo · {{ producto.inventario.cantidad }}</span>
+                {% else %}
+                    <span class="badge text-bg-success">Disponible · {{ producto.inventario.cantidad }}</span>
+                {% endif %}
+            </a>
+        {% else %}
+            <span class="badge text-bg-secondary">Sin inventario</span>
+        {% endif %}
+    </td>
 
     <td>S/ {{ producto.precio }}</td>
 
@@ -69,8 +87,8 @@
 {% empty %}
 
 <tr>
-    <td colspan="6" class="text-center py-5 text-muted">
-        No hay productos registrados.
+    <td colspan="8" class="text-center py-5 text-muted">
+        No hay productos registrados. Usa «Nuevo» para agregar el primero.
     </td>
 </tr>
 

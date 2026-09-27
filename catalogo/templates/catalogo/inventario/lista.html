@@ -30,7 +30,7 @@
     <td>{{ inventario.id }}</td>
 
     <td class="fw-semibold">
-        {{ inventario.producto.nombre }}
+        <a href="{% url 'catalogo:editar_producto' inventario.producto.id %}">{{ inventario.producto.nombre }}</a>
     </td>
 
     <td>{{ inventario.cantidad }}</td>

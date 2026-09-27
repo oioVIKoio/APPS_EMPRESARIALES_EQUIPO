@@ -29,14 +29,22 @@
 <tr>
     <td>{{ envio.id_envio }}</td>
 
-    <td class="fw-semibold">{{ envio.pedido.id_pedido }}</td>
+    <td class="fw-semibold"><a href="{% url 'ventas:editar_pedido' envio.pedido_id %}">#{{ envio.pedido_id }}</a><small class="d-block text-muted">{{ envio.pedido.cliente.nombre }} {{ envio.pedido.cliente.apellido }}</small></td>
 
     <td>{{ envio.direccion }}</td>
 
     <td>{{ envio.empresa_envio }}</td>
 
     <td>
-        <span class="badge text-bg-light">{{ envio.estado }}</span>
+        {% if envio.estado == 'Entregado' %}
+            <span class="badge text-bg-success">{{ envio.estado }}</span>
+        {% elif envio.estado == 'Devuelto' %}
+            <span class="badge text-bg-danger">{{ envio.estado }}</span>
+        {% elif envio.estado == 'Pendiente' %}
+            <span class="badge text-bg-warning">{{ envio.estado }}</span>
+        {% else %}
+            <span class="badge text-bg-info">{{ envio.estado }}</span>
+        {% endif %}
     </td>
 
     <td class="text-end">

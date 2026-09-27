@@ -58,8 +58,21 @@
         }
 
         .card {
-            border: 0;
-            border-radius: 14px;
+            border: 1px solid #e4e9ee;
+            border-radius: 12px;
+        }
+
+        .table th, .table td {
+            vertical-align: middle;
+        }
+
+        .table th:last-child, .table td:last-child {
+            min-width: 145px;
+        }
+
+        .page-heading {
+            border-bottom: 1px solid #dee2e6;
+            padding-bottom: 1rem;
         }
 
         footer {
@@ -85,21 +98,21 @@
             class="navbar-toggler"
             type="button"
             data-bs-toggle="collapse"
-            data-bs-target="#navbarNav"
-            aria-controls="navbarNav"
+            data-bs-target="#navbarTienda"
+            aria-controls="navbarTienda"
             aria-expanded="false"
             aria-label="Abrir navegación"
         >
             <span class="navbar-toggler-icon"></span>
         </button>
 
-        <div class="collapse navbar-collapse" id="navbarNav">
+        <div class="collapse navbar-collapse" id="navbarTienda">
 
             <ul class="navbar-nav ms-auto">
 
                 <li class="nav-item">
-                    <a class="nav-link" href="{% url 'catalogo:inicio' %}">
-                        Inicio
+                    <a class="nav-link{% if request.resolver_match.view_name == 'catalogo:inicio' %} active{% endif %}" href="{% url 'catalogo:inicio' %}">
+                        Catálogo
                     </a>
                 </li>
 
@@ -110,39 +123,34 @@
                 </li>
 
                 <li class="nav-item">
-                    <a class="nav-link" href="{% url 'ventas:inicio' %}">
+                    <a class="nav-link{% if request.resolver_match.namespace == 'ventas' %} active{% endif %}" href="{% url 'ventas:inicio' %}">
                         Ventas
                     </a>
                 </li>
 
                 <li class="nav-item">
-                    <a class="nav-link" href="{% url 'catalogo:lista_productos' %}">
+                    <a class="nav-link{% if request.resolver_match.view_name == 'catalogo:lista_productos' %} active{% endif %}" href="{% url 'catalogo:lista_productos' %}">
                         Productos
                     </a>
                 </li>
 
                 <li class="nav-item">
-                    <a class="nav-link" href="{% url 'catalogo:lista_categorias' %}">
-                        Categorías
-                    </a>
+                    <a class="nav-link{% if request.resolver_match.view_name == 'catalogo:lista_inventarios' %} active{% endif %}" href="{% url 'catalogo:lista_inventarios' %}">Inventario</a>
                 </li>
 
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'catalogo:lista_marcas' %}">
-                        Marcas
-                    </a>
-                </li>
-
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'catalogo:lista_proveedores' %}">
-                        Proveedores
-                    </a>
-                </li>
-
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'catalogo:lista_inventarios' %}">
-                        Inventario
-                    </a>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Gestión</a>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li><a class="dropdown-item" href="{% url 'catalogo:lista_categorias' %}">Categorías</a></li>
+                        <li><a class="dropdown-item" href="{% url 'catalogo:lista_marcas' %}">Marcas</a></li>
+                        <li><a class="dropdown-item" href="{% url 'catalogo:lista_proveedores' %}">Proveedores</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item" href="{% url 'ventas:lista_pedidos' %}">Pedidos</a></li>
+                        <li><a class="dropdown-item" href="{% url 'ventas:lista_detalles' %}">Detalles de pedido</a></li>
+                        <li><a class="dropdown-item" href="{% url 'ventas:lista_pagos' %}">Pagos</a></li>
+                        <li><a class="dropdown-item" href="{% url 'ventas:lista_envios' %}">Envíos</a></li>
+                        <li><a class="dropdown-item" href="{% url 'ventas:lista_cupones' %}">Cupones</a></li>
+                    </ul>
                 </li>
 
             </ul>
@@ -154,6 +162,11 @@
 
 <main>
     <div class="container page-container">
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags|default:'info' }}" role="alert">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
         {% block content %}
         {% endblock %}
     </div>
