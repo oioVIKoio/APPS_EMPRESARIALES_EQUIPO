@@ -12,22 +12,7 @@
             <div class="card-body p-4">
                 <form method="post">
                     {% csrf_token %}
-                    <div class="mb-3">
-                        <label for="nombre" class="form-label">Nombre</label>
-                        <input type="text" class="form-control" id="nombre" name="nombre" value="{{ cliente.nombre }}" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="apellido" class="form-label">Apellido</label>
-                        <input type="text" class="form-control" id="apellido" name="apellido" value="{{ cliente.apellido }}" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="email" class="form-label">Correo Electrónico</label>
-                        <input type="email" class="form-control" id="email" name="email" value="{{ cliente.email }}" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="telefono" class="form-label">Teléfono</label>
-                        <input type="text" class="form-control" id="telefono" name="telefono" value="{{ cliente.telefono }}" required>
-                    </div>
+                    {% include 'clientes/_cliente_campos.html' %}
                     <div class="d-flex justify-content-end gap-2 mt-4">
                         <a href="{% url 'cliente_list' %}" class="btn btn-secondary">Cancelar</a>
                         <button type="submit" class="btn btn-warning text-white">Actualizar Cambios</button>

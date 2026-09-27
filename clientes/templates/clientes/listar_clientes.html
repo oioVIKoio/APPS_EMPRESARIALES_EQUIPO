@@ -10,7 +10,7 @@
         <p class="text-muted mb-0">Gestión de clientes del e-commerce</p>
     </div>
     <a href="{% url 'crear_cliente' %}" class="btn btn-primary btn-lg">
-        <i class="bi bi-plus-circle"></i> Nuevo Cliente
+        <i class="bi bi-plus-circle"></i> Nuevo Cliente 
     </a>
 </div>
 
@@ -37,6 +37,8 @@
                         <td>{{ cliente.email }}</td>
                         <td>{{ cliente.telefono }}</td>
                         <td>{{ cliente.fecha_registro|date:"d/m/Y H:i" }}</td>
+                        
+                        {# Cada acción usa el ID del cliente actual para abrir su relación o su formulario CRUD. #}
                         <td class="text-center">
                             <a href="{% url 'cliente_perfil_detail' cliente.id_cliente %}" class="btn btn-sm btn-outline-info me-1">Perfil</a>
                             <a href="{% url 'cliente_favoritos_list' cliente.id_cliente %}" class="btn btn-sm btn-outline-secondary me-1">Favoritos</a>
