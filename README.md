@@ -153,6 +153,47 @@ A partir de estas relaciones:
 
 Esta organización permite conectar los módulos sin duplicar modelos ni mezclar sus responsabilidades.
 
+## Laboratorio N° 07 — Django ORM Avanzado
+
+Este proyecto implementa **14 ejercicios** de Django ORM avanzado, organizados en dos partes:
+
+### PARTE 1 — Consultas avanzadas sobre la aplicación base
+
+| Ejercicio | Descripción |
+|-----------|-------------|
+| 1 | Entidad principal, 3 relaciones, modelo intermedio N:M |
+| 2 | Carga de datos de prueba (5 clientes, 3× categorías/marcas/proveedores, 8 productos, 8 favoritos) |
+| 3 | Operación transaccional con `transaction.atomic()` y `F()` + patrón PRG |
+| 4 | Total global con `aggregate()` (Sum, Count) |
+| 5 | Valores por objeto con `annotate()` agrupados por estado y cliente |
+| 6 | Página de reporte con filtros de plantilla (`floatformat`) |
+| 7 | QuerySet personalizado (`as_manager()`) con métodos encadenables |
+| 8 | Medición y optimización N+1 con `select_related()` y `prefetch_related()` |
+
+### PARTE 2 — Consultas avanzadas sobre la investigación propia (7 entidades adicionales)
+
+| Ejercicio | Descripción |
+|-----------|-------------|
+| 9 | Tabla de equivalencias de 14 entidades del e-commerce |
+| 10 | Operación transaccional en investigación propia (procesar pago de pedido) |
+| 11 | Reporte de ventas con `aggregate()` y `annotate()` (global, por estado, por cliente) |
+| 12 | QuerySet personalizado para `Pedido` (pendientes, mayor a umbral) |
+| 13 | Medición y optimización N+1 en Pedidos con select_related/prefetch_related |
+| 14 | Actualización de requirements.txt y README.md |
+
+### URLs implementadas
+
+| URL | Vista | Ejercicio |
+|-----|-------|-----------|
+| `/clientes/` | `cliente_list` | CRUD base |
+| `/reporte/` | `reporte_view` | Ej. 6 |
+| `/favoritos/activos/` | `favoritos_activos_view` | Ej. 7 |
+| `/optimizacion/` | `optimizacion_nplus1_view` | Ej. 8 |
+| `/procesar-pedido/<pk>/` | `procesar_pedido_confirm` | Ej. 10 |
+| `/reporte-ventas/` | `reporte_ventas_view` | Ej. 11 |
+| `/pedidos-pendientes/` | `pedidos_pendientes_view` | Ej. 12 |
+| `/optimizacion-pedidos/` | `optimizacion_nplus1_pedidos_view` | Ej. 13 |
+
 ## Autores
 
 - **Santamaria Fabian, Victor Manuel**

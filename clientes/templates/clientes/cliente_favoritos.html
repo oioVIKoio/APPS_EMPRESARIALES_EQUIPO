@@ -46,6 +46,9 @@
                                 <thead class="table-light">
                                     <tr>
                                         <th>Producto</th>
+                                        <th>Prioridad</th>
+                                        <th>Estado</th>
+                                        <th>Descuento</th>
                                         <th>Agregado el</th>
                                         <th>Notificar Oferta</th>
                                         <th class="text-center">Acciones</th>
@@ -55,6 +58,19 @@
                                     {% for fav in cliente.favoritos.all %}
                                         <tr>
                                             <td class="fw-bold">{{ fav.producto.nombre }}</td>
+                                            <td><span class="badge bg-secondary">#{{ fav.prioridad }}</span></td>
+                                            <td>
+                                                {% if fav.estado == 'activo' %}
+                                                    <span class="badge bg-success">Activo</span>
+                                                {% elif fav.estado == 'oferta' %}
+                                                    <span class="badge bg-warning text-dark">En Oferta</span>
+                                                {% elif fav.estado == 'comprado' %}
+                                                    <span class="badge bg-primary">Comprado</span>
+                                                {% elif fav.estado == 'inactivo' %}
+                                                    <span class="badge bg-secondary">Inactivo</span>
+                                                {% endif %}
+                                            </td>
+                                            <td><strong>{{ fav.descuento_puntos }}</strong></td>
                                             <td>{{ fav.fecha_agregado|date:"d/m/Y H:i" }}</td>
                                             <td>
                                                 {% if fav.notificar_oferta %}
@@ -64,13 +80,18 @@
                                                 {% endif %}
                                             </td>
                                             <td class="text-center">
+                                                {% if fav.estado != 'comprado' %}
+                                                    <a href="{% url 'comprar_favorito_confirm' fav.pk %}" class="btn btn-sm btn-success" title="Comprar">
+                                                        <i class="bi bi-cart-plus"></i> Comprar
+                                                    </a>
+                                                {% endif %}
                                                 <a href="{% url 'favorito_update' fav.pk %}" class="btn btn-sm btn-warning">Editar</a>
                                                 <a href="{% url 'favorito_delete' fav.pk %}" class="btn btn-sm btn-danger">Eliminar</a>
                                             </td>
                                         </tr>
                                     {% empty %}
                                         <tr>
-                                            <td colspan="4" class="text-center py-3 text-muted">
+                                            <td colspan="7" class="text-center py-3 text-muted">
                                                 No tiene productos agregados en su lista de favoritos.
                                             </td>
                                         </tr>

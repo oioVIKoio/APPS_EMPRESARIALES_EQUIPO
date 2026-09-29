@@ -1,0 +1,133 @@
+{% extends 'clientes/base.html' %}
+
+{% block title %}Reporte de Ventas — E-commerce{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h1 class="page-title mb-1">Reporte de Ventas</h1>
+        <p class="section-label">Estadísticas globales con aggregate() y breakdowns con annotate()</p>
+    </div>
+    <a href="{% url 'cliente_list' %}" class="btn btn-secondary">Volver al listado</a>
+</div>
+
+<!-- ═══════════════════════════════════════════════ -->
+<!-- SECCIÓN 1: RESUMEN GLOBAL con aggregate()       -->
+<!-- ═══════════════════════════════════════════════ -->
+<div class="card shadow-sm border-0 mb-4">
+    <div class="card-header bg-primary text-white">
+        <h5 class="mb-0"><i class="bi bi-bar-chart-line"></i> 1. Resumen Global (aggregate)</h5>
+    </div>
+    <div class="card-body">
+        <div class="row g-3">
+            <div class="col-md-4">
+                <div class="text-center p-3 bg-light rounded">
+                    <h6 class="text-muted mb-1">Total Pedidos</h6>
+                    <h3 class="mb-0 fw-bold">{{ global_res.total_pedidos }}</h3>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="text-center p-3 bg-light rounded">
+                    <h6 class="text-muted mb-1">Monto Total</h6>
+                    <h3 class="mb-0 fw-bold text-primary">S/ {{ global_res.total_monto|floatformat:2 }}</h3>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="text-center p-3 bg-light rounded">
+                    <h6 class="text-muted mb-1">Promedio Total</h6>
+                    <h3 class="mb-0 fw-bold text-success">S/ {{ global_res.promedio_total|floatformat:2 }}</h3>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════ -->
+<!-- SECCIÓN 2: BREAKDOWN POR ESTADO                 -->
+<!-- ═══════════════════════════════════════════════ -->
+<div class="card shadow-sm border-0 mb-4">
+    <div class="card-header bg-secondary text-white">
+        <h5 class="mb-0"><i class="bi bi-collection"></i> 2. Desglose por Estado (values + annotate)</h5>
+    </div>
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>Estado</th>
+                        <th class="text-center">Cantidad</th>
+                        <th class="text-end">Monto Total</th>
+                        <th class="text-end">Promedio</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for grupo in por_estado %}
+                    <tr>
+                        <td>
+                            {% if grupo.estado == 'Pendiente' %}
+                                <span class="badge bg-warning text-dark">{{ grupo.estado }}</span>
+                            {% elif grupo.estado == 'Pagado' %}
+                                <span class="badge bg-success">{{ grupo.estado }}</span>
+                            {% elif grupo.estado == 'Enviado' %}
+                                <span class="badge bg-info">{{ grupo.estado }}</span>
+                            {% elif grupo.estado == 'Entregado' %}
+                                <span class="badge bg-primary">{{ grupo.estado }}</span>
+                            {% else %}
+                                <span class="badge bg-secondary">{{ grupo.estado }}</span>
+                            {% endif %}
+                        </td>
+                        <td class="text-center fw-bold">{{ grupo.total_pedidos }}</td>
+                        <td class="text-end">S/ {{ grupo.total_monto|floatformat:2 }}</td>
+                        <td class="text-end">S/ {{ grupo.promedio_total|floatformat:2 }}</td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="4" class="text-center py-3 text-muted">No hay datos disponibles.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════ -->
+<!-- SECCIÓN 3: ESTADÍSTICAS POR CLIENTE             -->
+<!-- ═══════════════════════════════════════════════ -->
+<div class="card shadow-sm border-0 mb-4">
+    <div class="card-header bg-success text-white">
+        <h5 class="mb-0"><i class="bi bi-people"></i> 3. Estadísticas por Cliente (annotate)</h5>
+    </div>
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-success">
+                    <tr>
+                        <th>Cliente</th>
+                        <th class="text-center">Total Pedidos</th>
+                        <th class="text-end">Monto Total</th>
+                        <th class="text-end">Promedio</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for grupo in por_cliente %}
+                    <tr>
+                        <td class="fw-bold">
+                            {{ grupo.cliente__nombre }} {{ grupo.cliente__apellido }}
+                        </td>
+                        <td class="text-center">{{ grupo.total_pedidos }}</td>
+                        <td class="text-end">S/ {{ grupo.total_monto|floatformat:2 }}</td>
+                        <td class="text-end">S/ {{ grupo.promedio_total|floatformat:2 }}</td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="4" class="text-center py-3 text-muted">No hay datos disponibles.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

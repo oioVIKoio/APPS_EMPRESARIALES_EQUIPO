@@ -134,6 +134,14 @@
                 <li class="nav-item"><a class="nav-link" href="{% url 'carrito_list' %}">Carritos</a></li>
                 <li class="nav-item"><a class="nav-link" href="{% url 'direccion_list' %}">Direcciones</a></li>
                 <li class="nav-item"><a class="nav-link" href="{% url 'resena_list' %}">Reseñas</a></li>
+                <li class="nav-item"><a class="nav-link" href="{% url 'reporte_view' %}">📊 Reporte</a></li>
+                <li class="nav-item"><a class="nav-link" href="{% url 'favoritos_activos_view' %}">❤️ Activos</a></li>
+                <li class="nav-item"><a class="nav-link" href="{% url 'favoritos_alto_valor_view' umbral=30 %}">🔥 Alto Valor</a></li>
+                <li class="nav-item"><a class="nav-link" href="{% url 'optimizacion_nplus1_view' %}">⚡ Optimización</a></li>
+                <li class="nav-item"><a class="nav-link" href="{% url 'procesar_pedido_confirm' 1 %}">💳 Procesar Pedido</a></li>
+                <li class="nav-item"><a class="nav-link" href="{% url 'reporte_ventas_view' %}">📈 Reporte Ventas</a></li>
+                <li class="nav-item"><a class="nav-link" href="{% url 'pedidos_pendientes_list' %}">⏳ Pedidos Pend</a></li>
+                <li class="nav-item"><a class="nav-link" href="{% url 'optimizacion_nplus1_pedidos_view' %}">🔬 N+1 Pedidos</a></li>
             </ul>
         </div>
     </div>

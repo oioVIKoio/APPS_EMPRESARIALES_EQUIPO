@@ -1,8 +1,42 @@
 from django.db import models
 
 
+# ═══════════════════════════════════════════════════════════
+# Ejercicio 12: QuerySet personalizado para Pedido
+# ═══════════════════════════════════════════════════════════
+
+class PedidoCustomQuerySet(models.QuerySet):
+    """QuerySet personalizado para Pedido con métodos de regla de negocio."""
+
+    def pedidos_pendientes(self):
+        """Filtra y retorna solo los pedidos con estado='Pendiente'."""
+        return self.filter(estado='Pendiente')
+
+    def con_mayor_a(self, monto):
+        """Filtra y retorna pedidos con total > monto."""
+        return self.filter(total__gt=monto)
+
+
+class PedidoManager(models.Manager):
+    """Manager personalizado que expone métodos de regla de negocio para Pedido."""
+
+    def get_queryset(self):
+        return PedidoCustomQuerySet(self.model, using=self._db)
+
+    def pedidos_pendientes(self):
+        """Retorna solo los pedidos con estado 'Pendiente'."""
+        return self.get_queryset().pedidos_pendientes()
+
+    def con_mayor_a(self, monto):
+        """Retorna pedidos con total > monto."""
+        return self.get_queryset().con_mayor_a(monto)
+
+
 class Pedido(models.Model):
     id_pedido = models.BigAutoField(primary_key=True)
+
+    # Ejercicio 12: Custom manager para QuerySet personalizado
+    objects = PedidoManager()
 
     cliente = models.ForeignKey(
         'clientes.Cliente',

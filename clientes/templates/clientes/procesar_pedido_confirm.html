@@ -1,0 +1,96 @@
+{% extends 'clientes/base.html' %}
+
+{% block title %}Confirmar Procesar Pago — {{ pedido.id_pedido }}{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="page-title mb-0">Confirmar Procesamiento de Pago</h1>
+    <a href="{% url 'ventas:inicio' %}" class="btn btn-secondary">Cancelar</a>
+</div>
+
+{% if messages %}
+    {% for message in messages %}
+        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    {% endfor %}
+{% endif %}
+
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card shadow-sm border-0">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0">Detalle del Pedido</h5>
+            </div>
+            <div class="card-body">
+                <table class="table table-striped">
+                    <tr>
+                        <th>ID Pedido:</th>
+                        <td><strong>{{ pedido.id_pedido }}</strong></td>
+                    </tr>
+                    <tr>
+                        <th>Cliente:</th>
+                        <td>{{ pedido.cliente.nombre }} {{ pedido.cliente.apellido }}</td>
+                    </tr>
+                    <tr>
+                        <th>Fecha del Pedido:</th>
+                        <td>{{ pedido.fecha_pedido|date:"d/m/Y H:i" }}</td>
+                    </tr>
+                    <tr>
+                        <th>Estado Actual:</th>
+                        <td>
+                            {% if pedido.estado == 'Pendiente' %}
+                                <span class="badge bg-warning">Pendiente</span>
+                            {% elif pedido.estado == 'Pagado' %}
+                                <span class="badge bg-success">Pagado</span>
+                            {% elif pedido.estado == 'Enviado' %}
+                                <span class="badge bg-info">Enviado</span>
+                            {% elif pedido.estado == 'Entregado' %}
+                                <span class="badge bg-primary">Entregado</span>
+                            {% else %}
+                                <span class="badge bg-secondary">{{ pedido.estado }}</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    <tr class="table-active fw-bold">
+                        <th>Total del Pedido:</th>
+                        <td>S/ {{ pedido.total|floatformat:2 }}</td>
+                    </tr>
+                    <tr>
+                        <th>Monto con Factor x1.20:</th>
+                        <td>
+                            <span class="text-muted">
+                                (Total × 1.20 = ) S/ {{ pedido.total|floatformat:2 }} × 1.20
+                                = S/ {{ pedido.total|floatformat:2|add:"0"|floatformat:2 }}
+                            </span>
+                        </td>
+                    </tr>
+                </table>
+
+                <div class="alert alert-info mt-3">
+                    <strong><i class="bi bi-info-circle"></i> Acción a realizar:</strong>
+                    <ol class="mb-0 mt-2">
+                        <li>Se creará un registro de <strong>Pago</strong> vinculado a este pedido.</li>
+                        <li>Se actualizará el <strong>estado</strong> del pedido a <strong>'Pagado'</strong>.</li>
+                        <li>Se utilizará <code>F()</code> para aplicar una actualización atómica al total.</li>
+                        <li>Todo se ejecuta dentro de una transacción <code>atomic()</code>.</li>
+                    </ol>
+                </div>
+
+                <form method="post" action="{% url 'procesar_pedido_confirm' pedido.pk %}" class="mt-3">
+                    {% csrf_token %}
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-success btn-lg">
+                            <i class="bi bi-check-circle"></i> Confirmar Procesamiento
+                        </button>
+                        <a href="{% url 'cliente_list' %}" class="btn btn-outline-secondary">
+                            Volver a Clientes
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

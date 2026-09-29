@@ -1,0 +1,233 @@
+{% extends 'clientes/base.html' %}
+
+{% block title %}Ejercicio 8 - Optimización N+1{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col">
+        <h1 class="page-title">Ejercicio 8 — Optimización N+1</h1>
+        <p class="text-muted">Medición de consultas con <code>connection.queries</code> y optimización con <code>select_related()</code></p>
+    </div>
+</div>
+
+<!-- Sección 1: Resultados de la medición -->
+<div class="card mb-4">
+    <div class="card-header">
+        <h2 class="h5 mb-0">📊 Resultados de la Medición de Consultas</h2>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="alert alert-danger">
+                    <strong>❌ Sin optimizar:</strong> {{ queries_no_optimizadas }} consultas
+                </div>
+                <p class="small text-muted">
+                    Se usó <code>Favorito.objects.all()</code> sin <code>select_related()</code>.
+                    Cada acceso a <code>cliente.nombre</code> y <code>producto.nombre</code>
+                    genera una consulta SQL adicional (N favoritos = N×2 consultas extra).
+                </p>
+            </div>
+            <div class="col-md-6">
+                <div class="alert alert-success">
+                    <strong>✅ Optimizado:</strong> {{ queries_optimizadas }} consulta(s)
+                </div>
+                <p class="small text-muted">
+                    Se usó <code>Favorito.objects.select_related('cliente', 'producto').all()</code>.
+                    Todos los datos se cargan en 1 sola consulta con JOIN.
+                </p>
+            </div>
+        </div>
+
+        <div class="alert alert-info mt-3">
+            <strong>💡 Ahorro:</strong> Se redujo de {{ queries_no_optimizadas }} a {{ queries_optimizadas }} consulta(s).
+            {% if queries_no_optimizadas > 0 %}
+                Reducción de <strong>{{ queries_no_optimizadas|add:'-'|add:queries_optimizadas }}</strong> consultas
+                ({{ queries_no_optimizadas|add:'-'|add:queries_optimizadas|floatformat:0|add:1|add:'%' }} menos).
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<!-- Sección 2: SQL queries sin optimizar -->
+<div class="card mb-4">
+    <div class="card-header bg-danger text-white">
+        <h2 class="h5 mb-0">🔴 Consultas SQL sin optimizar ({{ queries_no_optimizadas }} queries)</h2>
+    </div>
+    <div class="card-body">
+        <p class="small text-muted mb-2">
+            Total de favoritos: <strong>{{ total_favoritos }}</strong> — Cada favorito accede a <code>cliente</code> y <code>producto</code> por separado.
+        </p>
+        <div style="max-height: 400px; overflow-y: auto;">
+            <table class="table table-sm table-striped">
+                <thead>
+                    <tr>
+                        <th style="width:60px">#</th>
+                        <th>SQL</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for q in favoritos_no_optimizados %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td><code>{{ q.cliente.nombre }} - {{ q.producto.nombre }}</code></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <p class="small text-muted mt-2">
+            <strong>Patrón N+1:</strong> 1 consulta para favoritos + N consultas para clientes + N consultas para productos.
+        </p>
+    </div>
+</div>
+
+<!-- Sección 3: SQL queries optimizado -->
+<div class="card mb-4">
+    <div class="card-header bg-success text-white">
+        <h2 class="h5 mb-0">🟢 Consultas SQL optimizado (1 consulta con JOIN)</h2>
+    </div>
+    <div class="card-body">
+        <p class="small text-muted mb-2">
+            Total de favoritos: <strong>{{ total_favoritos }}</strong> — Todos los datos se cargan con un solo JOIN.
+        </p>
+        <div style="max-height: 400px; overflow-y: auto;">
+            <table class="table table-sm table-striped">
+                <thead>
+                    <tr>
+                        <th style="width:60px">#</th>
+                        <th>Cliente</th>
+                        <th>Producto</th>
+                        <th>Estado</th>
+                        <th>Descuento</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for fav in favoritos_optimizados %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td>{{ fav.cliente.nombre }}</td>
+                        <td>{{ fav.producto.nombre }}</td>
+                        <td>
+                            <span class="badge bg-{% if fav.estado == 'activo' %}success{% elif fav.estado == 'inactivo' %}secondary{% elif fav.estado == 'oferta' %}warning{% else %}danger{% endif %}">
+                                {{ fav.estado }}
+                            </span>
+                        </td>
+                        <td>{{ fav.descuento_puntos }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <div class="alert alert-success mt-3">
+            <strong>select_related()</strong> genera un JOIN SQL que carga <code>clientes_favorito</code> + <code>clientes_cliente</code> + <code>catalogo_producto</code> en una sola consulta.
+        </div>
+    </div>
+</div>
+
+<!-- Sección 4: Cuándo usar select_related vs prefetch_related -->
+<div class="card mb-4">
+    <div class="card-header bg-primary text-white">
+        <h2 class="h5 mb-0">📚 select_related() vs prefetch_related()</h2>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card border-primary">
+                    <div class="card-body">
+                        <h5 class="card-title text-primary">select_related()</h5>
+                        <ul class="list-unstyled">
+                            <li>✅ Para relaciones <strong>1:1</strong> y <strong>N:1</strong> (ForeignKey)</li>
+                            <li>✅ Usa JOIN SQL (una consulta)</li>
+                            <li>✅ Ejemplo: <code>select_related('cliente', 'producto')</code></li>
+                            <li>⚠️ No funciona con ManyToManyField</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card border-info">
+                    <div class="card-body">
+                        <h5 class="card-title text-info">prefetch_related()</h5>
+                        <ul class="list-unstyled">
+                            <li>✅ Para relaciones <strong>M:N</strong> (ManyToManyField)</li>
+                            <li>✅ Ejecuta 2 consultas (separate query)</li>
+                            <li>✅ Ejemplo: <code>prefetch_related('categorias')</code></li>
+                            <li>✅ También funciona con ForeignKey</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Sección 5: Ejemplos prácticos -->
+<div class="card">
+    <div class="card-header bg-secondary text-white">
+        <h2 class="h5 mb-0">🛠️ Ejemplos prácticos de optimización</h2>
+    </div>
+    <div class="card-body">
+        <div class="accordion" id="ejemplosAccordion">
+            <div class="accordion-item">
+                <h2 class="accordion-header">
+                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#ej1">
+                        Ejemplo 1: Listado de direcciones (N:1 con select_related)
+                    </button>
+                </h2>
+                <div id="ej1" class="accordion-collapse collapse show" data-bs-parent="#ejemplosAccordion">
+                    <div class="accordion-body">
+                        <pre class="bg-dark text-light p-3 rounded"><code># ❌ Sin optimizar (N+1 queries)
+direcciones = Direccion.objects.all()
+for dir in direcciones:
+    print(dir.cliente.nombre)  # Query por cada dirección
+
+# ✅ Con select_related (1 query con JOIN)
+direcciones = Direccion.objects.select_related('cliente').all()
+for dir in direcciones:
+    print(dir.cliente.nombre)  # Sin queries adicionales</code></pre>
+                    </div>
+                </div>
+            </div>
+            <div class="accordion-item">
+                <h2 class="accordion-header">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#ej2">
+                        Ejemplo 2: Favoritos con productos (N:1 con select_related)
+                    </button>
+                </h2>
+                <div id="ej2" class="accordion-collapse collapse" data-bs-parent="#ejemplosAccordion">
+                    <div class="accordion-body">
+                        <pre class="bg-dark text-light p-3 rounded"><code># ❌ Sin optimizar (N+1 queries)
+favoritos = Favorito.objects.all()
+for fav in favoritos:
+    print(fav.cliente.nombre, fav.producto.nombre)
+
+# ✅ Con select_related (1 query con JOIN)
+favoritos = Favorito.objects.select_related('cliente', 'producto').all()
+for fav in favoritos:
+    print(fav.cliente.nombre, fav.producto.nombre)  # Sin queries</code></pre>
+                    </div>
+                </div>
+            </div>
+            <div class="accordion-item">
+                <h2 class="accordion-header">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#ej3">
+                        Ejemplo 3: Clientes con múltiples relaciones (select_related anidado)
+                    </button>
+                </h2>
+                <div id="ej3" class="accordion-collapse collapse" data-bs-parent="#ejemplosAccordion">
+                    <div class="accordion-body">
+                        <pre class="bg-dark text-light p-3 rounded"><code># ✅ select_related con doble JOIN
+cliente = Cliente.objects.select_related('perfil', 'direccion__ciudad').get(pk=1)
+# Una sola consulta: clientes + clientes_perfil + clientes_direccion + ciudades
+
+# ✅ prefetch_related para M:N
+cliente = Cliente.objects.prefetch_related('favoritos__producto').get(pk=1)
+# Dos consultas: clientes + (favoritos + productos JOIN)</code></pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

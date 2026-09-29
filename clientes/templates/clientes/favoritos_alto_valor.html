@@ -1,0 +1,68 @@
+{% extends 'clientes/base.html' %}
+
+{% block title %}Favoritos Alto Valor — E-commerce{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h1 class="page-title mb-1">Favoritos Alto Valor</h1>
+        <p class="section-label">QuerySet personalizado: <code>Favorito.objects.con_valor_mayor_a({{ umbral }})</code></p>
+    </div>
+    <a href="{% url 'cliente_list' %}" class="btn btn-secondary">Volver al listado</a>
+</div>
+
+<div class="card shadow-sm border-0 mb-4">
+    <div class="card-header bg-warning text-dark">
+        <h5 class="mb-0"><i class="bi bi-graph-up-arrow"></i> Favoritos con descuento_puntos &gt; {{ umbral }}</h5>
+    </div>
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-warning">
+                    <tr>
+                        <th>Cliente</th>
+                        <th>Producto</th>
+                        <th class="text-center">Descuento</th>
+                        <th class="text-end">Precio</th>
+                        <th class="text-end">Valor</th>
+                        <th class="text-center">Estado</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for fav in favoritos %}
+                    <tr>
+                        <td class="fw-bold">{{ fav.cliente.nombre }}</td>
+                        <td>{{ fav.producto.nombre }}</td>
+                        <td class="text-center"><strong>{{ fav.descuento_puntos }}</strong></td>
+                        <td class="text-end">S/ {{ fav.producto.precio|floatformat:2 }}</td>
+                        <td class="text-end"><strong class="text-success">S/ {{ fav.descuento_puntos|floatformat:2 }} × {{ fav.producto.precio|floatformat:2 }}</strong></td>
+                        <td class="text-center">
+                            {% if fav.estado == 'activo' %}
+                                <span class="badge bg-success">Activo</span>
+                            {% elif fav.estado == 'oferta' %}
+                                <span class="badge bg-warning text-dark">En Oferta</span>
+                            {% elif fav.estado == 'comprado' %}
+                                <span class="badge bg-primary">Comprado</span>
+                            {% elif fav.estado == 'inactivo' %}
+                                <span class="badge bg-secondary">Inactivo</span>
+                            {% else %}
+                                <span class="badge bg-info">{{ fav.estado|capfirst }}</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="6" class="text-center py-3 text-muted">No hay favoritos con descuento_puntos &gt; {{ umbral }}.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="alert alert-info">
+    <strong>Nota:</strong> Esta vista utiliza el método personalizado <code>Favorito.objects.con_valor_mayor_a({{ umbral }})</code>
+    definido en <code>FavoritoCustomQuerySet</code> (Ejercicio 7 — QuerySet con <code>as_manager</code>).
+</div>
+{% endblock %}

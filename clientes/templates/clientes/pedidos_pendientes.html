@@ -1,0 +1,120 @@
+{% extends 'clientes/base.html' %}
+
+{% block title %}Pedidos Pendientes — E-commerce{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h1 class="page-title mb-1">Pedidos Pendientes</h1>
+        <p class="section-label">Usando QuerySet personalizado: Pedido.objects.pedidos_pendientes()</p>
+    </div>
+    <a href="{% url 'cliente_list' %}" class="btn btn-secondary">Volver al listado</a>
+</div>
+
+<!-- ═══════════════════════════════════════════════ -->
+<!-- MÉTODO 1: pedidos_pendientes                   -->
+<!-- ═══════════════════════════════════════════════ -->
+<div class="card shadow-sm border-0 mb-4">
+    <div class="card-header bg-warning text-dark">
+        <h5 class="mb-0"><i class="bi bi-hourglass-split"></i> Pedidos Pendientes</h5>
+    </div>
+    <div class="card-body">
+        <div class="alert alert-light border mb-3">
+            <code>Pedido.objects.pedidos_pendientes()</code> — Filtra pedidos donde estado = 'Pendiente'
+        </div>
+        <div class="table-responsive">
+            <table class="table table-hover align-middle">
+                <thead class="table-warning">
+                    <tr>
+                        <th>ID</th>
+                        <th>Cliente</th>
+                        <th>Fecha</th>
+                        <th class="text-end">Total</th>
+                        <th class="text-center">Estado</th>
+                        <th class="text-center">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for pedido in pendientes %}
+                    <tr>
+                        <td class="fw-bold">{{ pedido.id_pedido }}</td>
+                        <td>{{ pedido.cliente.nombre }} {{ pedido.cliente.apellido }}</td>
+                        <td>{{ pedido.fecha_pedido|date:"d/m/Y H:i" }}</td>
+                        <td class="text-end">S/ {{ pedido.total|floatformat:2 }}</td>
+                        <td class="text-center">
+                            <span class="badge bg-warning text-dark">{{ pedido.estado }}</span>
+                        </td>
+                        <td class="text-center">
+                            <a href="{% url 'procesar_pedido_confirm' pedido.pk %}" class="btn btn-sm btn-outline-primary">
+                                <i class="bi bi-cash-coin"></i> Procesar Pago
+                            </a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="6" class="text-center py-3 text-muted">
+                            <i class="bi bi-check-circle"></i> ¡No hay pedidos pendientes!
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════ -->
+<!-- MÉTODO 2: con_mayor_a                         -->
+<!-- ═══════════════════════════════════════════════ -->
+<div class="card shadow-sm border-0 mb-4">
+    <div class="card-header bg-info text-white">
+        <h5 class="mb-0"><i class="bi bi-trophy"></i> Pedidos con Total Mayor a S/ {{ umbral|floatformat:2 }}</h5>
+    </div>
+    <div class="card-body">
+        <div class="alert alert-light border mb-3">
+            <code>Pedido.objects.con_mayor_a({{ umbral }})</code> — Filtra pedidos donde total > {{ umbral }}
+        </div>
+        <div class="table-responsive">
+            <table class="table table-hover align-middle">
+                <thead class="table-info">
+                    <tr>
+                        <th>ID</th>
+                        <th>Cliente</th>
+                        <th>Fecha</th>
+                        <th class="text-end">Total</th>
+                        <th class="text-center">Estado</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for pedido in mayores_a_umbral %}
+                    <tr>
+                        <td class="fw-bold">{{ pedido.id_pedido }}</td>
+                        <td>{{ pedido.cliente.nombre }} {{ pedido.cliente.apellido }}</td>
+                        <td>{{ pedido.fecha_pedido|date:"d/m/Y H:i" }}</td>
+                        <td class="text-end fw-bold text-info">S/ {{ pedido.total|floatformat:2 }}</td>
+                        <td class="text-center">
+                            {% if pedido.estado == 'Pendiente' %}
+                                <span class="badge bg-warning text-dark">{{ pedido.estado }}</span>
+                            {% elif pedido.estado == 'Pagado' %}
+                                <span class="badge bg-success">{{ pedido.estado }}</span>
+                            {% elif pedido.estado == 'Enviado' %}
+                                <span class="badge bg-info">{{ pedido.estado }}</span>
+                            {% else %}
+                                <span class="badge bg-secondary">{{ pedido.estado }}</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="5" class="text-center py-3 text-muted">
+                            No hay pedidos con total mayor a S/ {{ umbral|floatformat:2 }}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

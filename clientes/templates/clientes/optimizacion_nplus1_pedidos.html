@@ -1,0 +1,238 @@
+{% extends 'clientes/base.html' %}
+
+{% block title %}Optimización N+1 — Pedidos{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h1 class="page-title mb-1">Medición y Optimización N+1 — Pedidos</h1>
+        <p class="section-label">Ejercicio 13: Medir consultas sin optimizar vs. con select_related / prefetch_related</p>
+    </div>
+    <a href="{% url 'cliente_list' %}" class="btn btn-secondary">Volver al listado</a>
+</div>
+
+<!-- ═══════════════════════════════════════════════ -->
+<!-- SECCIÓN 1: QUERIES SIN OPTIMIZAR               -->
+<!-- ═══════════════════════════════════════════════ -->
+<div class="card shadow-sm border-0 mb-4 border-warning">
+    <div class="card-header bg-warning text-dark">
+        <h5 class="mb-0"><i class="bi bi-exclamation-triangle"></i> 1. Listado SIN optimización (N+1 problem)</h5>
+    </div>
+    <div class="card-body">
+        <div class="alert alert-light border">
+            <strong>Descripción:</strong> Se recorre cada pedido accediendo a <code>pedido.cliente</code>,
+            <code>pedido.detalles</code> y <code>detalle.producto</code> sin optimización, generando
+            múltiples consultas SQL por cada objeto en el bucle.
+        </div>
+
+        <div class="row g-3 mb-4">
+            <div class="col-md-4">
+                <div class="text-center p-3 bg-light rounded">
+                    <h6 class="text-muted mb-1">Pedidos listados</h6>
+                    <h3 class="mb-0 fw-bold">{{ pedidos_no_optimizados|length }}</h3>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="text-center p-3 bg-danger-subtle rounded">
+                    <h6 class="text-muted mb-1">Consultas ejecutadas</h6>
+                    <h3 class="mb-0 fw-bold text-danger">{{ queries_no_optimizadas }}</h3>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="text-center p-3 bg-light rounded">
+                    <h6 class="text-muted mb-1">Overhead</h6>
+                    <h3 class="mb-0 fw-bold text-danger">
+                        {{ queries_no_optimizadas|add:"-1" }} consultas extra
+                    </h3>
+                </div>
+            </div>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table table-hover table-sm align-middle">
+                <thead class="table-warning">
+                    <tr>
+                        <th>ID</th>
+                        <th>Cliente</th>
+                        <th>Fecha</th>
+                        <th class="text-end">Total</th>
+                        <th>Estado</th>
+                        <th class="text-center">Detalles</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for pedido in pedidos_no_optimizados %}
+                    <tr>
+                        <td class="fw-bold">{{ pedido.id_pedido }}</td>
+                        <td>{{ pedido.cliente.nombre }} {{ pedido.cliente.apellido }}</td>
+                        <td>{{ pedido.fecha_pedido|date:"d/m/Y H:i" }}</td>
+                        <td class="text-end">S/ {{ pedido.total|floatformat:2 }}</td>
+                        <td>
+                            <span class="badge bg-{{ pedido.estado|yesno:'success:warning,info,primary:secondary' }}">{{ pedido.estado }}</span>
+                        </td>
+                        <td class="text-center">
+                            <small class="text-muted">{{ pedido.detalles.count }} item(s)</small>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="6" class="text-center py-3 text-muted">No hay pedidos disponibles.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════ -->
+<!-- SECCIÓN 2: QUERIES CON OPTIMIZACIÓN            -->
+<!-- ═══════════════════════════════════════════════ -->
+<div class="card shadow-sm border-0 mb-4 border-success">
+    <div class="card-header bg-success text-white">
+        <h5 class="mb-0"><i class="bi bi-lightning-charge"></i> 2. Listado CON optimización (select_related + prefetch_related)</h5>
+    </div>
+    <div class="card-body">
+        <div class="alert alert-light border">
+            <strong>Descripción:</strong> Se usa
+            <code>select_related('cliente')</code> para las relaciones FK y
+            <code>prefetch_related('detalles__producto')</code> para la relación N:M con detalle.
+            Esto reduce significativamente el número de consultas.
+        </div>
+
+        <div class="row g-3 mb-4">
+            <div class="col-md-4">
+                <div class="text-center p-3 bg-light rounded">
+                    <h6 class="text-muted mb-1">Pedidos listados</h6>
+                    <h3 class="mb-0 fw-bold">{{ pedidos_optimizados|length }}</h3>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="text-center p-3 bg-success-subtle rounded">
+                    <h6 class="text-muted mb-1">Consultas ejecutadas</h6>
+                    <h3 class="mb-0 fw-bold text-success">{{ queries_optimizadas }}</h3>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="text-center p-3 bg-success-subtle rounded">
+                    <h6 class="text-muted mb-1">Reducción</h6>
+                    <h3 class="mb-0 fw-bold text-success">
+                        {% if queries_no_optimizadas > queries_optimizadas %}
+                            -{{ queries_no_optimizadas|add:"-1" }} de {{ queries_no_optimizadas|add:"-1" }} consultas
+                        {% else %}
+                            Sin cambios
+                        {% endif %}
+                        <small class="text-muted">({{ queries_no_optimizadas|add:"-1" }} → {{ queries_optimizadas|add:"-1" }})</small>
+                    </h3>
+                </div>
+            </div>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table table-hover table-sm align-middle">
+                <thead class="table-success">
+                    <tr>
+                        <th>ID</th>
+                        <th>Cliente</th>
+                        <th>Fecha</th>
+                        <th class="text-end">Total</th>
+                        <th>Estado</th>
+                        <th class="text-center">Detalles</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for pedido in pedidos_optimizados %}
+                    <tr>
+                        <td class="fw-bold">{{ pedido.id_pedido }}</td>
+                        <td>{{ pedido.cliente.nombre }} {{ pedido.cliente.apellido }}</td>
+                        <td>{{ pedido.fecha_pedido|date:"d/m/Y H:i" }}</td>
+                        <td class="text-end">S/ {{ pedido.total|floatformat:2 }}</td>
+                        <td>
+                            <span class="badge bg-{{ pedido.estado|yesno:'success:warning,info,primary:secondary' }}">{{ pedido.estado }}</span>
+                        </td>
+                        <td class="text-center">
+                            <small class="text-muted">{{ pedido.detalles.count }} item(s)</small>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="6" class="text-center py-3 text-muted">No hay pedidos disponibles.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════ -->
+<!-- SECCIÓN 3: RESUMEN COMPARATIVO                -->
+<!-- ═══════════════════════════════════════════════ -->
+<div class="card shadow-sm border-0 mb-4">
+    <div class="card-header bg-primary text-white">
+        <h5 class="mb-0"><i class="bi bi-bar-chart"></i> 3. Resumen Comparativo</h5>
+    </div>
+    <div class="card-body">
+        <table class="table table-bordered align-middle">
+            <thead>
+                <tr>
+                    <th>Métrica</th>
+                    <th class="text-center">Sin optimizar</th>
+                    <th class="text-center">Optimizado</th>
+                    <th class="text-center">Mejora</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="fw-bold">Pedidos mostrados</td>
+                    <td class="text-center">{{ pedidos_no_optimizados|length }}</td>
+                    <td class="text-center">{{ pedidos_optimizados|length }}</td>
+                    <td class="text-center">—</td>
+                </tr>
+                <tr>
+                    <td class="fw-bold">Consultas SQL</td>
+                    <td class="text-center text-danger fw-bold">{{ queries_no_optimizadas }}</td>
+                    <td class="text-center text-success fw-bold">{{ queries_optimizadas }}</td>
+                    <td class="text-center">
+                        {% if queries_no_optimizadas > queries_optimizadas %}
+                            <span class="badge bg-success">-{{ queries_no_optimizadas|add:"-1" }} consultas</span>
+                        {% else %}
+                            <span class="badge bg-info">Sin cambios</span>
+                        {% endif %}
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════ -->
+<!-- SECCIÓN 4: CONSULTAS SQL DEBUG                -->
+<!-- ═══════════════════════════════════════════════ -->
+<div class="card shadow-sm border-0 mb-4">
+    <div class="card-header bg-dark text-white">
+        <h5 class="mb-0"><i class="bi bi-terminal"></i> 4. Queries SQL (DEBUG=True)</h5>
+    </div>
+    <div class="card-body">
+        <details>
+            <summary class="cursor-pointer fw-bold text-primary">Ver consultas SQL sin optimizar</summary>
+            <pre class="bg-dark text-light p-3 mt-2 rounded" style="max-height: 300px; overflow-y: auto;">
+{% for query in queries_detail_no_opt %}{{ query.sql }}
+{% endfor %}</pre>
+        </details>
+
+        <details class="mt-3">
+            <summary class="cursor-pointer fw-bold text-success">Ver consultas SQL optimizadas</summary>
+            <pre class="bg-dark text-light p-3 mt-2 rounded" style="max-height: 300px; overflow-y: auto;">
+{% for query in queries_detail_opt %}{{ query.sql }}
+{% endfor %}</pre>
+        </details>
+
+        <div class="alert alert-info mt-3">
+            <strong><i class="bi bi-info-circle"></i> Nota:</strong> Django DEBUG=True registra todas las consultas
+            en <code>connection.queries</code>. Con DEBUG=False, esta lista queda vacía por rendimiento.
+        </div>
+    </div>
+</div>
+
+{% endblock %}
