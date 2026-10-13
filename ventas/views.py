@@ -40,7 +40,10 @@ def crear_pedido(request):
     return render(
         request,
         'ventas/pedidos/crear.html',
-        {'clientes': clientes}
+        {
+            'clientes': clientes,
+            'opciones_estado': [valor for valor, _ in Pedido.ESTADO_CHOICES],
+        }
     )
 
 
@@ -63,7 +66,7 @@ def editar_pedido(request, id):
         {
             'pedido': pedido,
             'clientes': clientes,
-            'opciones_estado': ['Pendiente', 'Confirmado', 'Enviado', 'Entregado', 'Cancelado'],
+            'opciones_estado': [valor for valor, _ in Pedido.ESTADO_CHOICES],
         }
     )
 

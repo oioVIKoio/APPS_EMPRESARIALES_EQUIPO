@@ -33,6 +33,14 @@ class PedidoManager(models.Manager):
 
 
 class Pedido(models.Model):
+    ESTADO_CHOICES = [
+        ('Pendiente', 'Pendiente'),
+        ('Confirmado', 'Confirmado'),
+        ('Enviado', 'Enviado'),
+        ('Entregado', 'Entregado'),
+        ('Cancelado', 'Cancelado'),
+    ]
+
     id_pedido = models.BigAutoField(primary_key=True)
 
     # Ejercicio 12: Custom manager para QuerySet personalizado
@@ -54,6 +62,7 @@ class Pedido(models.Model):
 
     estado = models.CharField(
         max_length=30,
+        choices=ESTADO_CHOICES,
         default='Pendiente'
     )
 

@@ -38,6 +38,7 @@ El proyecto utiliza relaciones entre modelos mediante Django ORM.
 
 - Python
 - Django 5.2.13
+- Django REST Framework 3.18.1
 - SQLite
 - Django ORM
 - HTML
@@ -193,6 +194,35 @@ Este proyecto implementa **14 ejercicios** de Django ORM avanzado, organizados e
 | `/reporte-ventas/` | `reporte_ventas_view` | Ej. 11 |
 | `/pedidos-pendientes/` | `pedidos_pendientes_view` | Ej. 12 |
 | `/optimizacion-pedidos/` | `optimizacion_nplus1_pedidos_view` | Ej. 13 |
+
+## Laboratorio N° 08 — Django REST Framework
+
+Se expusieron como API REST (JSON) los modelos existentes, reutilizando sus relaciones y los QuerySets personalizados del Laboratorio 07. El código está en `clientes/serializers.py`, `clientes/api_views.py` y `clientes/api_urls.py`.
+
+### Serializers
+
+| Serializer | Modelo | Detalle |
+|-----------|--------|---------|
+| `ResenaSerializer` | Resena | `validate_calificacion`: de 1 a 5 |
+| `FavoritoSerializer` | Favorito | Cliente y producto anidados (solo lectura) |
+| `CuponSerializer` | Cupon | `validate_descuento` (mayor que 0 y hasta 100) y fecha de fin no anterior a la de inicio |
+| `DetallePedidoSerializer` | DetallePedido | `validate_cantidad` (al menos 1); el subtotal se calcula en el servidor |
+| `PedidoSerializer` | Pedido | Cliente y detalles anidados (solo lectura) |
+
+### Endpoints
+
+| URL | ViewSet | Filtros y acciones |
+|-----|---------|--------------------|
+| `/api/resenas/` | `ResenaViewSet` (ModelViewSet) | `?search=` (comentario, cliente) y `?ordering=` (calificacion, fecha) |
+| `/api/favoritos/` | `FavoritoViewSet` (ReadOnlyModelViewSet) | `?estado=` · acción `/activos/` con `favoritos_activos()` y `?min_puntos=` con `con_valor_mayor_a()` |
+| `/api/cupones/` | `CuponViewSet` (ModelViewSet) | `?search=` (codigo, descripcion) y `?ordering=` (descuento, fecha_fin) |
+| `/api/detalles-pedido/` | `DetallePedidoViewSet` (ModelViewSet) | — |
+| `/api/pedidos/` | `PedidoViewSet` (ReadOnlyModelViewSet) | `?estado=` · acción `/pendientes/` con `pedidos_pendientes()` y `?total_min=` con `con_mayor_a()` |
+| `/api/genericas/resenas/` | `ListCreateAPIView` y `RetrieveUpdateDestroyAPIView` | Versión con vistas genéricas (Ejercicio 4) |
+
+Los recursos de solo lectura usan `select_related()` y `prefetch_related()` en `get_queryset()`: Favoritos pasa de 34 a 1 consulta y Pedidos de 22 a 3.
+
+La API todavía no tiene autenticación ni permisos.
 
 ## Autores
 

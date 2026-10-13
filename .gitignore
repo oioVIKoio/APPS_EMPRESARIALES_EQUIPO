@@ -3,3 +3,9 @@ __pycache__/
 *.pyc
 db.sqlite3
 .env
+
+cargar_datos_prueba.py
+contextoCliente.md
+ESTADO.md
+REPORTE_LABORATORIO.md
+TAREAS.md

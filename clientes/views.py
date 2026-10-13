@@ -194,6 +194,7 @@ def comprar_favorito_procesar(request, pk):
     return redirect('comprar_favorito_confirm', pk=pk)
 
 
+
 def reporte_view(request):
     """Reporte global con aggregate() y annotate() aplicando floatformat:2.
 
